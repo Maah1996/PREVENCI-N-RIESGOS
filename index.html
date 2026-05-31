@@ -55,8 +55,8 @@
     background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 12px,transparent 12px 28px);
     pointer-events:none;
   }
-  .hero .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;position:relative}
-  .hero-left{display:flex;align-items:center;gap:20px;flex:1;min-width:0}
+  .hero .wrap{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;position:relative}
+  .hero-left{display:flex;align-items:flex-start;gap:20px;flex:1;min-width:0}
   .badge{display:inline-flex;align-items:center;gap:7px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
     color:var(--amber);font-weight:700;margin-bottom:10px}
   .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px rgba(224,150,47,.18)}
@@ -144,10 +144,23 @@
   .reveal{opacity:0;transform:translateY(12px);animation:rise .55s cubic-bezier(.2,.7,.2,1) forwards}
   @keyframes rise{to{opacity:1;transform:none}}
 
-  @media(max-width:620px){
+  @media(max-width:768px){
     .company .grid{grid-template-columns:1fr}
-    .ring{order:-1}
-    .hero .wrap{justify-content:flex-start}
+    .hero .wrap{flex-direction:column;align-items:flex-start;gap:12px}
+    #clockWidget{order:-1;width:100%;box-sizing:border-box;padding:5px 14px 6px}
+    .ring{align-self:flex-end;margin-top:-60px}
+    .hero h1{font-size:clamp(20px,5vw,30px)}
+    .norm-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+    #chatPanel{width:calc(100vw - 32px);right:16px;bottom:80px}
+    .ap-body .nuf .perms{flex-direction:column;gap:8px}
+    #adminPanel{width:100%;max-width:100vw}
+  }
+  @media(max-width:480px){
+    .wrap{padding:0 12px}
+    .hero{padding:18px 0 14px}
+    .cw-time{font-size:20px}
+    .ring{display:none}
+    #chatBtn{bottom:16px;right:16px}
   }
 
   /* GUÍA / EJEMPLO */
@@ -297,18 +310,18 @@
   .btn-report:hover{background:#0f1f35}
 
   /* ===== RELOJ LED ===== */
-  #clockWidget{background:#080808;border:1px solid #3a0000;border-radius:10px;
-    padding:7px 14px;text-align:center;display:none;flex-shrink:0;
-    box-shadow:0 2px 12px rgba(0,0,0,.5)}
-  .cw-city{font-family:'Courier New',monospace;font-size:9px;font-weight:700;
-    letter-spacing:.18em;color:#882200;margin-bottom:5px;text-transform:uppercase}
-  .cw-time{font-family:'Courier New',monospace;font-size:28px;font-weight:700;
+  #clockWidget{background:#080808;border:1px solid #3a0000;border-radius:8px;
+    padding:5px 12px 6px;text-align:center;display:none;flex-shrink:0;
+    box-shadow:0 2px 10px rgba(0,0,0,.5);margin-left:0;align-self:flex-start}
+  .cw-city{font-family:'Courier New',monospace;font-size:8px;font-weight:700;
+    letter-spacing:.16em;color:#772200;margin-bottom:3px;text-transform:uppercase}
+  .cw-time{font-family:'Courier New',monospace;font-size:24px;font-weight:700;
     color:#ff3300;letter-spacing:3px;line-height:1}
-  .cw-date{font-family:'Courier New',monospace;font-size:11px;color:#bb2200;
-    margin-top:4px;letter-spacing:1px}
-  .cw-row{display:flex;justify-content:space-around;align-items:center;margin-top:5px;gap:8px}
-  .cw-temp{font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:#ff4400;letter-spacing:.5px}
-  .cw-label{font-family:'Courier New',monospace;font-size:8px;color:#661100;letter-spacing:.12em;text-transform:uppercase}
+  .cw-date{font-family:'Courier New',monospace;font-size:10px;color:#aa1f00;
+    margin-top:3px;letter-spacing:.8px}
+  .cw-row{display:flex;justify-content:space-around;align-items:center;margin-top:4px;gap:6px}
+  .cw-temp{font-family:'Courier New',monospace;font-size:11px;font-weight:700;color:#ff4400;letter-spacing:.4px}
+  .cw-label{font-family:'Courier New',monospace;font-size:7.5px;color:#661100;letter-spacing:.1em;text-transform:uppercase}
 
   /* ===== CHAT NORMATIVA ===== */
   #chatBtn{position:fixed;bottom:24px;right:24px;z-index:1500;width:56px;height:56px;border-radius:50%;
