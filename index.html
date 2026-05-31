@@ -157,6 +157,70 @@
   textarea.resp:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(47,143,91,.13)}
   textarea.resp.filled{border-color:#2563a8;background:#f5f9ff}
 
+  /* ===== AUTH ===== */
+  #loginScreen{position:fixed;inset:0;background:rgba(17,32,28,.93);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+  .login-card{background:#fff;border-radius:18px;padding:36px 32px;width:100%;max-width:390px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+  .login-card .lc-logo{font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+  .login-card h2{font-family:'Fraunces',serif;font-size:22px;color:var(--ink);margin-bottom:4px}
+  .login-card p.sub{color:var(--muted);font-size:13px;margin-bottom:22px}
+  .login-card .field{margin-bottom:13px}
+  .login-card .field label{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .login-card .field input{width:100%;border:1px solid var(--line);background:#fcfbf7;border-radius:9px;padding:10px 12px;font:inherit;font-size:14px;color:var(--text);transition:border-color .15s,box-shadow .15s}
+  .login-card .field input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(47,143,91,.15)}
+  #loginError{color:#c0392b;font-size:12.5px;min-height:18px;margin-bottom:6px}
+  .login-actions{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .btn-public{background:none;border:1px solid var(--line);border-radius:9px;color:var(--muted);font:inherit;font-size:13px;cursor:pointer;padding:9px;text-align:center;transition:background .15s}
+  .btn-public:hover{background:#f5f5f2;color:var(--ink)}
+
+  /* USER BAR */
+  #userBar{background:var(--ink-2);border-bottom:2px solid rgba(255,255,255,.06);padding:8px 0;display:none}
+  #userBar .wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .ubadge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:4px 12px;font-size:12.5px;color:#d6e2da}
+  .ubadge .udot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+  .ubadge.pub .udot{background:var(--muted)}
+  #userBar .spacer{flex:1}
+  .ub-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#d6e2da;font:inherit;font-size:12.5px;cursor:pointer;padding:5px 12px;transition:background .15s}
+  .ub-btn:hover{background:rgba(255,255,255,.16)}
+  .ub-btn.admin-btn{border-color:var(--amber);color:var(--amber)}
+
+  /* ADMIN PANEL */
+  #adminOverlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1990;display:none}
+  #adminPanel{position:fixed;top:0;right:-440px;width:420px;max-width:95vw;height:100%;background:#fff;z-index:1991;box-shadow:-4px 0 32px rgba(0,0,0,.18);display:flex;flex-direction:column;transition:right .3s cubic-bezier(.2,.7,.2,1);overflow-y:auto}
+  #adminPanel.open{right:0}
+  .ap-head{background:var(--ink);color:#fff;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+  .ap-head h3{font-family:'Fraunces',serif;font-size:17px;margin:0}
+  .ap-close{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;line-height:1;padding:0;opacity:.8}
+  .ap-close:hover{opacity:1}
+  .ap-body{padding:20px 22px;flex:1}
+  .ap-sec{margin-bottom:28px}
+  .ap-sec h4{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .user-row{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+  .user-row:last-child{border-bottom:none}
+  .ur-info .un{font-weight:700;font-size:13.5px;color:var(--ink)}
+  .ur-info .ur{font-size:11.5px;color:var(--muted)}
+  .perm-tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text);cursor:pointer;white-space:nowrap;background:#f5f5f2;border:1px solid var(--line);border-radius:6px;padding:3px 8px;transition:background .15s,border-color .15s}
+  .perm-tag input{accent-color:var(--green);width:14px;height:14px;margin:0}
+  .perm-tag.on{background:#edfbf2;border-color:var(--green);color:var(--green-d)}
+  .perm-perms{display:flex;flex-direction:column;gap:5px}
+  .del-user{background:none;border:1px solid #e7c9c9;color:#9a3535;border-radius:7px;font-size:11.5px;padding:4px 8px;cursor:pointer;font-family:inherit}
+  .del-user:hover{background:#fdf4f4}
+  .nuf .field{margin-bottom:10px}
+  .nuf .field label{display:block;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .nuf .field input[type=text],.nuf .field input[type=password]{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font:inherit;font-size:13.5px;color:var(--text);background:#fcfbf7;transition:border-color .15s}
+  .nuf .field input:focus{outline:none;border-color:var(--green)}
+  .nuf .perms{display:flex;gap:14px;margin-top:4px;flex-wrap:wrap}
+  .nuf .perms label{display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer}
+  .nuf .perms input{accent-color:var(--green)}
+  #nuError{color:#c0392b;font-size:12.5px;min-height:16px}
+
+  /* PERMISSION ENFORCEMENT */
+  body.readonly .check{pointer-events:none;opacity:.4}
+  body.readonly .lbl{cursor:default!important}
+  body.readonly textarea.resp{background:#f7f7f5!important;color:#aaa!important;resize:none;pointer-events:none}
+  body.readonly .field input{background:#f7f7f5!important;pointer-events:none}
+  body.readonly .toolbar{display:none!important}
+  body.no-print #printBtn{display:none!important}
+
   /* PRINT */
   @media print{
     body{background:#fff;padding:0}
@@ -175,6 +239,78 @@
 </style>
 </head>
 <body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="lc-logo">Plan de Emergencia · Chile</div>
+    <h2>Acceso al sistema</h2>
+    <p class="sub">Ingrese sus credenciales para continuar.</p>
+    <div class="field"><label>Usuario</label><input id="loginUser" type="text" placeholder="nombre de usuario" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="field"><label>Contraseña</label><input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div id="loginError"></div>
+    <div class="login-actions">
+      <button class="btn primary" onclick="doLogin()">Ingresar</button>
+      <button class="btn-public" onclick="publicView()">Continuar como público (solo lectura)</button>
+    </div>
+  </div>
+</div>
+
+<!-- USER BAR -->
+<div id="userBar">
+  <div class="wrap">
+    <span class="ubadge" id="uBadge"><span class="udot"></span><span id="uName">—</span></span>
+    <div class="spacer"></div>
+    <button class="ub-btn admin-btn" id="adminBtn" style="display:none" onclick="openAdmin()">⚙ Administración</button>
+    <button class="ub-btn" onclick="logout()">Cerrar sesión</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL OVERLAY -->
+<div id="adminOverlay" onclick="closeAdmin()"></div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+  <div class="ap-head">
+    <h3>Panel de Administración</h3>
+    <button class="ap-close" onclick="closeAdmin()">✕</button>
+  </div>
+  <div class="ap-body">
+
+    <div class="ap-sec">
+      <h4>Usuarios registrados</h4>
+      <div id="userList"></div>
+    </div>
+
+    <div class="ap-sec">
+      <h4>Crear nuevo usuario</h4>
+      <div class="nuf">
+        <div class="field"><label>Nombre completo</label><input type="text" id="nuName" placeholder="Ej: Juan Pérez"></div>
+        <div class="field"><label>Usuario</label><input type="text" id="nuUser" placeholder="Ej: jperez"></div>
+        <div class="field"><label>Contraseña</label><input type="password" id="nuPass" placeholder="Mínimo 6 caracteres"></div>
+        <div class="field">
+          <label>Permisos</label>
+          <div class="perms">
+            <label><input type="checkbox" id="nuWrite"> Puede escribir y guardar</label>
+            <label><input type="checkbox" id="nuPrint"> Puede imprimir</label>
+          </div>
+        </div>
+        <div id="nuError"></div>
+        <button class="btn primary" onclick="createUser()" style="width:100%">+ Crear usuario</button>
+      </div>
+    </div>
+
+    <div class="ap-sec">
+      <h4>Mi cuenta</h4>
+      <div class="nuf">
+        <div class="field"><label>Nueva contraseña</label><input type="password" id="myNewPass" placeholder="Nueva contraseña"></div>
+        <div id="pwError"></div>
+        <button class="btn" onclick="changeMyPassword()" style="width:100%">Cambiar contraseña</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <header class="hero">
   <div class="wrap">
@@ -216,7 +352,7 @@
         <button class="btn" onclick="exportJson()">💾 Guardar avance (.json)</button>
         <button class="btn ghost" onclick="document.getElementById(&#39;imp&#39;).click()">📂 Cargar avance</button>
         <input id="imp" type="file" accept=".json" style="display:none" onchange="importJson(event)">
-        <button class="btn ghost" onclick="window.print()">🖨 Imprimir / PDF</button>
+        <button id="printBtn" class="btn ghost" onclick="window.print()">🖨 Imprimir / PDF</button>
         <button class="btn danger" onclick="resetAll()">↺ Reiniciar</button>
       </div>
     </div>
@@ -508,6 +644,175 @@ Object.keys(state).forEach(k=>{
 });
 // Guardar campos de empresa al cambiar
 FIELDS.forEach(f=>document.getElementById(f)?.addEventListener('input',lsSave));
+
+// ==================== AUTH ====================
+const AUTH_KEY = 'checklist_auth_v1';
+const SESS_KEY = 'checklist_session_v1';
+
+function getAuthData(){
+  try{ return JSON.parse(localStorage.getItem(AUTH_KEY))||{users:[]}; }
+  catch(e){ return {users:[]}; }
+}
+function saveAuthData(a){ try{localStorage.setItem(AUTH_KEY,JSON.stringify(a));}catch(e){} }
+
+function initAuth(){
+  const a = getAuthData();
+  if(!a.users || a.users.length===0){
+    a.users = [{
+      id:'admin', username:'admin', name:'Administrador',
+      password:'admin2025', role:'admin', canWrite:true, canPrint:true
+    }];
+    saveAuthData(a);
+  }
+}
+
+function getSession(){
+  try{ return JSON.parse(sessionStorage.getItem(SESS_KEY)); }
+  catch(e){ return null; }
+}
+function setSession(obj){ sessionStorage.setItem(SESS_KEY,JSON.stringify(obj)); }
+
+function getCurrentUser(){
+  const sess = getSession();
+  if(!sess) return null;
+  if(sess.userId==='public') return {id:'public',name:'Público',role:'public',canWrite:false,canPrint:false};
+  const u = getAuthData().users.find(u=>u.id===sess.userId);
+  return u||null;
+}
+
+function doLogin(){
+  const username = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginError');
+  if(!username||!password){ err.textContent='Complete todos los campos.'; return; }
+  const a = getAuthData();
+  const user = a.users.find(u=>u.username===username && u.password===password);
+  if(!user){ err.textContent='Usuario o contraseña incorrectos.'; return; }
+  setSession({userId:user.id});
+  enterApp();
+}
+
+function publicView(){
+  setSession({userId:'public'});
+  enterApp();
+}
+
+function logout(){
+  sessionStorage.removeItem(SESS_KEY);
+  location.reload();
+}
+
+function enterApp(){
+  document.getElementById('loginScreen').style.display='none';
+  const user = getCurrentUser();
+  if(!user){ location.reload(); return; }
+
+  // User bar
+  const bar = document.getElementById('userBar');
+  bar.style.display='block';
+  const badge = document.getElementById('uBadge');
+  document.getElementById('uName').textContent =
+    user.role==='admin' ? user.name+' · Admin' :
+    user.role==='public'? 'Visitante (solo lectura)' : user.name;
+  if(user.role==='public') badge.classList.add('pub');
+  if(user.role==='admin'){
+    document.getElementById('adminBtn').style.display='inline-flex';
+  }
+
+  // Apply permissions via body classes
+  if(!user.canWrite) document.body.classList.add('readonly');
+  if(!user.canPrint) document.body.classList.add('no-print');
+}
+
+// ---- Admin Panel ----
+function openAdmin(){
+  renderUserList();
+  document.getElementById('adminPanel').classList.add('open');
+  document.getElementById('adminOverlay').style.display='block';
+}
+function closeAdmin(){
+  document.getElementById('adminPanel').classList.remove('open');
+  document.getElementById('adminOverlay').style.display='none';
+}
+
+function renderUserList(){
+  const a = getAuthData();
+  const cu = getCurrentUser();
+  const el = document.getElementById('userList');
+  el.innerHTML = a.users.map(u=>`
+    <div class="user-row">
+      <div class="ur-info">
+        <div class="un">${u.name}</div>
+        <div class="ur">@${u.username}${u.role==='admin'?' · Administrador':''}</div>
+      </div>
+      <div class="perm-perms">
+        ${u.role!=='admin'?`
+        <label class="perm-tag${u.canWrite?' on':''}">
+          <input type="checkbox" ${u.canWrite?'checked':''} onchange="togglePerm('${u.id}','canWrite',this.checked)"> ✏ Escribir
+        </label>
+        <label class="perm-tag${u.canPrint?' on':''}">
+          <input type="checkbox" ${u.canPrint?'checked':''} onchange="togglePerm('${u.id}','canPrint',this.checked)"> 🖨 Imprimir
+        </label>`:'<span style="font-size:12px;color:var(--muted)">Todos los permisos</span>'}
+      </div>
+      ${u.id!==cu.id&&u.role!=='admin'?`<button class="del-user" onclick="deleteUser('${u.id}')">Eliminar</button>`:'<span></span>'}
+    </div>`).join('');
+}
+
+function togglePerm(uid,perm,val){
+  const a = getAuthData();
+  const u = a.users.find(u=>u.id===uid);
+  if(u){ u[perm]=val; saveAuthData(a); renderUserList(); }
+}
+
+function deleteUser(uid){
+  if(!confirm('¿Eliminar este usuario?')) return;
+  const a = getAuthData();
+  a.users = a.users.filter(u=>u.id!==uid);
+  saveAuthData(a);
+  renderUserList();
+}
+
+function createUser(){
+  const name  = document.getElementById('nuName').value.trim();
+  const uname = document.getElementById('nuUser').value.trim().toLowerCase();
+  const pass  = document.getElementById('nuPass').value;
+  const cWrite= document.getElementById('nuWrite').checked;
+  const cPrint= document.getElementById('nuPrint').checked;
+  const err   = document.getElementById('nuError');
+
+  if(!name||!uname||!pass){ err.textContent='Complete todos los campos.'; return; }
+  if(pass.length<6){ err.textContent='La contraseña debe tener al menos 6 caracteres.'; return; }
+  const a = getAuthData();
+  if(a.users.find(u=>u.username===uname)){ err.textContent='Ese nombre de usuario ya existe.'; return; }
+
+  a.users.push({
+    id: 'u_'+Date.now(),
+    username: uname, name, password: pass,
+    role:'user', canWrite: cWrite, canPrint: cPrint
+  });
+  saveAuthData(a);
+  err.textContent='';
+  ['nuName','nuUser','nuPass'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('nuWrite').checked=false;
+  document.getElementById('nuPrint').checked=false;
+  renderUserList();
+}
+
+function changeMyPassword(){
+  const np  = document.getElementById('myNewPass').value;
+  const err = document.getElementById('pwError');
+  if(np.length<6){ err.textContent='Mínimo 6 caracteres.'; return; }
+  const cu = getCurrentUser();
+  const a  = getAuthData();
+  const u  = a.users.find(u=>u.id===cu.id);
+  if(u){ u.password=np; saveAuthData(a); document.getElementById('myNewPass').value=''; err.textContent=''; alert('Contraseña actualizada.'); }
+}
+
+// ---- Init ----
+initAuth();
+const _sess = getSession();
+if(_sess){ enterApp(); }
+// (loginScreen stays visible if no session)
 </script>
 
 
