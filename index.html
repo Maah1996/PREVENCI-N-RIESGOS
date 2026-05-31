@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)file:///C:/Users/gladi/Downloads/checklist_plan_emergencia.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist Previo al Plan de Emergencia · Normativa Chilena</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="./Checklist Previo al Plan de Emergencia · Normativa Chilena_files/css2" rel="stylesheet">
+<style>
+  :root{
+    --ink:#11201c;
+    --ink-2:#1d3530;
+    --paper:#f6f4ed;
+    --card:#ffffff;
+    --line:#e3e0d4;
+    --green:#2f8f5b;
+    --green-d:#1f6b42;
+    --amber:#e0962f;
+    --amber-soft:#fbf0db;
+    --text:#243430;
+    --muted:#6c7b75;
+    --shadow:0 1px 2px rgba(17,32,28,.06),0 8px 24px rgba(17,32,28,.06);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Hanken Grotesk',-apple-system,'Segoe UI',sans-serif;
+    background:
+      radial-gradient(1200px 500px at 80% -10%, #16332b 0%, transparent 60%),
+      var(--paper);
+    color:var(--text);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:60px;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:0 18px}
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(150deg,var(--ink) 0%,var(--ink-2) 100%);
+    color:#eef2ec;
+    padding:34px 0 30px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:4px solid var(--amber);
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 12px,transparent 12px 28px);
+    pointer-events:none;
+  }
+  .hero .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;position:relative}
+  .badge{display:inline-flex;align-items:center;gap:7px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--amber);font-weight:700;margin-bottom:10px}
+  .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px rgba(224,150,47,.18)}
+  .hero h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(26px,4vw,40px);line-height:1.08;letter-spacing:-.01em}
+  .hero p.sub{color:#b9c8c0;margin-top:8px;font-size:15px;max-width:46ch}
+  .hero .norms{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+  .hero .norms span{font-size:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+    padding:4px 10px;border-radius:999px;color:#d6e2da}
+
+  /* progress ring */
+  .ring{flex-shrink:0;text-align:center}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .track{stroke:rgba(255,255,255,.14)}
+  .ring .fill{stroke:var(--green);stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
+  .ring .pct{font-family:'Fraunces',serif;font-size:26px;font-weight:600;fill:#fff}
+  .ring small{display:block;color:#9fb0a8;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-top:4px}
+
+  /* CARDS */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .section{margin-top:22px}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:30px 0 4px}
+  .panel-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:19px;color:var(--ink)}
+
+  /* COMPANY FORM */
+  .company{padding:20px 22px}
+  .company .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 18px}
+  .field label{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .field input{width:100%;border:1px solid var(--line);background:#fcfbf7;border-radius:9px;padding:10px 12px;font:inherit;font-size:14px;color:var(--text);transition:border-color .15s,box-shadow .15s}
+  .field input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(47,143,91,.15)}
+
+  /* TOOLBAR */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  button.btn{font:inherit;font-weight:600;font-size:13.5px;border-radius:10px;padding:10px 16px;border:1px solid var(--line);
+    background:#fff;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:transform .08s,box-shadow .15s,background .15s,border-color .15s}
+  button.btn:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+  button.btn:active{transform:translateY(0)}
+  button.btn.primary{background:var(--green);border-color:var(--green-d);color:#fff}
+  button.btn.primary:hover{background:var(--green-d)}
+  button.btn.ghost{background:transparent}
+  button.btn.danger{color:#9a3535;border-color:#e7c9c9;background:#fdf4f4}
+
+  /* PHASES */
+  .phase{margin-top:14px;overflow:hidden}
+  .phase summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:14px;user-select:none}
+  .phase summary::-webkit-details-marker{display:none}
+  .num{flex-shrink:0;width:34px;height:34px;border-radius:9px;background:var(--ink);color:#fff;font-family:'Fraunces',serif;
+    font-weight:600;font-size:16px;display:grid;place-items:center}
+  .phase[open] .num{background:var(--green)}
+  .ptitle{flex:1;min-width:0}
+  .ptitle .t{font-weight:700;font-size:15.5px;color:var(--ink)}
+  .mini{margin-top:7px;height:6px;border-radius:99px;background:#eceadf;overflow:hidden}
+  .mini i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#3da96c);width:0;transition:width .5s ease}
+  .pcount{flex-shrink:0;font-size:12.5px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  .chev{flex-shrink:0;transition:transform .25s;color:var(--muted)}
+  .phase[open] .chev{transform:rotate(180deg)}
+
+  .tasks{padding:2px 20px 6px;border-top:1px solid var(--line)}
+  .task{padding:13px 0;border-bottom:1px dashed var(--line);display:flex;gap:13px;align-items:flex-start}
+  .task:last-child{border-bottom:none}
+  .check{flex-shrink:0;width:22px;height:22px;border:2px solid #c8ccc4;border-radius:7px;background:#fff;cursor:pointer;
+    display:grid;place-items:center;margin-top:1px;transition:all .18s}
+  .check svg{width:13px;height:13px;stroke:#fff;stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .22s ease .04s}
+  .task.done .check{background:var(--green);border-color:var(--green)}
+  .task.done .check svg{stroke-dashoffset:0}
+  .tbody{flex:1;min-width:0}
+  .tbody .lbl{font-size:14.5px;color:var(--text);cursor:pointer;transition:color .2s}
+  .task.done .lbl{color:var(--muted);text-decoration:line-through;text-decoration-color:#b7c0ba}
+  .note-toggle{margin-top:6px;font-size:12px;color:var(--green-d);background:none;border:none;cursor:pointer;font-weight:600;padding:0;font-family:inherit}
+  .note-toggle:hover{text-decoration:underline}
+  textarea.note{display:none;width:100%;margin-top:8px;border:1px solid var(--line);border-radius:8px;background:#fcfbf7;
+    padding:9px 11px;font:inherit;font-size:13.5px;resize:vertical;min-height:54px;color:var(--text)}
+  textarea.note:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(47,143,91,.13)}
+  textarea.note.open{display:block}
+  .note-toggle.has::after{content:" •";color:var(--amber);font-weight:900}
+
+  .norm{margin:6px 20px 18px;background:var(--amber-soft);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;
+    padding:10px 13px;font-size:12.5px;color:#7a5a1d}
+  .norm b{color:#6b4e16}
+
+  footer.note-foot{margin-top:30px;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.6}
+  footer.note-foot a{color:var(--green-d)}
+
+  /* entrance animation */
+  .reveal{opacity:0;transform:translateY(12px);animation:rise .55s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  @media(max-width:620px){
+    .company .grid{grid-template-columns:1fr}
+    .ring{order:-1}
+    .hero .wrap{justify-content:flex-start}
+  }
+
+  /* PRINT */
+  @media print{
+    body{background:#fff;padding:0}
+    .hero{background:#fff;color:#000;border-bottom:2px solid #000}
+    .hero::before,.ring,.toolbar,.chev,.note-toggle{display:none!important}
+    .hero h1,.badge,.hero .norms span,.ptitle .t,.num{color:#000!important;background:none!important}
+    .num{border:1px solid #000}
+    .phase{break-inside:avoid}
+    .phase:not([open]) .tasks,.phase:not([open]) .norm{display:block!important}
+    details{open:true}
+    .card{box-shadow:none;border:1px solid #999}
+    textarea.note{display:block!important;border:1px solid #ccc}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="badge"><span class="dot"></span>Seguridad y Salud en el Trabajo</div>
+      <h1>Checklist previo al Plan&nbsp;de&nbsp;Emergencia</h1>
+      <p class="sub">Lista de verificación, paso a paso, de todo lo que hay que hacer en una empresa <b>antes</b> de redactar su plan de emergencia.</p>
+      <div class="norms">
+        <span>DS N° 594</span><span>DS N° 44</span><span>Ley N° 16.744</span><span>NCh 1411</span>
+      </div>
+    </div>
+    <div class="ring">
+      <svg width="118" height="118" viewBox="0 0 118 118">
+        <circle class="track" cx="59" cy="59" r="50" fill="none" stroke-width="11"></circle>
+        <circle id="ringFill" class="fill" cx="59" cy="59" r="50" fill="none" stroke-width="11" stroke-dasharray="314.16" stroke-dashoffset="314.16" style="stroke-dashoffset: 314.159;"></circle>
+        <text id="ringPct" class="pct" x="59" y="59" text-anchor="middle" dominant-baseline="central" transform="rotate(90 59 59)">0%</text>
+      </svg>
+      <small>Avance total</small>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- Datos de la empresa -->
+  <section class="section reveal" style="animation-delay:.05s">
+    <div class="panel-head"><h2>Datos de la empresa</h2></div>
+    <div class="card company">
+      <div class="grid">
+        <div class="field"><label>Empresa / Razón social</label><input id="f_empresa" placeholder="Nombre de la empresa"></div>
+        <div class="field"><label>Rubro / Actividad</label><input id="f_rubro" placeholder="Ej: comercio, restaurante, taller"></div>
+        <div class="field"><label>Dirección</label><input id="f_dir" placeholder="Calle, número, comuna"></div>
+        <div class="field"><label>N° de trabajadores</label><input id="f_trab" placeholder="Ej: 22" inputmode="numeric"></div>
+        <div class="field"><label>Responsable del diagnóstico</label><input id="f_resp" placeholder="Nombre"></div>
+        <div class="field"><label>Fecha</label><input id="f_fecha" type="date"></div>
+      </div>
+      <div class="toolbar">
+        <button class="btn primary" onclick="exportTxt()">⬇ Exportar resumen (.txt)</button>
+        <button class="btn" onclick="exportJson()">💾 Guardar avance (.json)</button>
+        <button class="btn ghost" onclick="document.getElementById(&#39;imp&#39;).click()">📂 Cargar avance</button>
+        <input id="imp" type="file" accept=".json" style="display:none" onchange="importJson(event)">
+        <button class="btn ghost" onclick="window.print()">🖨 Imprimir / PDF</button>
+        <button class="btn danger" onclick="resetAll()">↺ Reiniciar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fases (se generan con JS) -->
+  <section class="section reveal" style="animation-delay:.12s">
+    <div class="panel-head"><h2>Fases del trabajo</h2><span class="pcount" id="globalCount">0 / 32 tareas</span></div>
+    <div id="phases"></div>
+  </section>
+
+  <footer class="note-foot">
+    Herramienta de apoyo basada en la normativa chilena vigente · DS N° 594/1999 (MINSAL), DS N° 44/2023 (Min. del Trabajo, vigente desde 01-02-2025), Ley N° 16.744 y NCh 1411.<br>
+    No reemplaza la asesoría de un experto en prevención de riesgos ni la asistencia técnica del organismo administrador (mutualidad).
+  </footer>
+</div>
+
+<script>
+const PHASES = [
+  { t:"Preparación y coordinación inicial",
+    norm:"<b>Ley N° 16.744</b> (obligaciones del empleador y rol del organismo administrador) · <b>DS N° 44</b> (gestión preventiva planificada).",
+    tasks:[
+      "Definir el objetivo del trabajo y a quién va dirigido (todo el personal y todos los turnos).",
+      "Obtener la autorización formal del empleador para inspeccionar las instalaciones y entrevistar al personal.",
+      "Reunir la documentación existente: plan de emergencia anterior, planos, reglamento interno y registros de mantención.",
+      "Identificar el organismo administrador (ACHS, IST o Mutual de Seguridad) y solicitar asistencia técnica.",
+      "Elaborar un cronograma de actividades (visitas, capacitaciones y simulacro)."
+    ]},
+  { t:"Reconocimiento de las instalaciones (visita técnica)",
+    norm:"<b>DS N° 594, Art. 37</b>: vías de evacuación seguras, libres de obstáculos y señalizadas hacia una zona de seguridad.",
+    tasks:[
+      "Recorrer todas las áreas: operación/producción, bodegas, oficinas, baños, accesos y patios.",
+      "Determinar la superficie y elaborar un croquis con salidas y pasillos.",
+      "Identificar las vías de evacuación y la(s) zona(s) de seguridad hacia el exterior.",
+      "Registrar con fotografías los puntos críticos (siempre con autorización).",
+      "Localizar extintores, luces de emergencia, botiquín y red húmeda/seca si existe.",
+      "Verificar que las vías estén libres de obstáculos y que las puertas de escape abran en sentido de evacuación."
+    ]},
+  { t:"Identificación de peligros y evaluación de riesgos (Matriz IPER)",
+    norm:"<b>DS N° 44, Art. 7</b>: Matriz de Identificación de Peligros y Evaluación de Riesgos (MIPER) y mapa de riesgos.",
+    tasks:[
+      "Identificar los peligros por área: incendio, eléctrico, mecánico, químico, fuga de gas, sismo, etc.",
+      "Identificar las zonas o tareas de mayor riesgo según la actividad de la empresa.",
+      "Evaluar cada riesgo según su probabilidad de ocurrencia y la gravedad de sus consecuencias.",
+      "Construir la Matriz de Identificación de Peligros y Evaluación de Riesgos (MIPER/IPER).",
+      "Elaborar el mapa de riesgos de las instalaciones.",
+      "Considerar los riesgos del entorno y del clima de la zona (viento, lluvia, nieve, sismicidad)."
+    ]},
+  { t:"Inspección de equipos y elementos de seguridad",
+    norm:"<b>DS N° 594, Art. 45, 47 y 48</b> (número, mantención e instrucción de uso de extintores) · <b>NCh 1411 / NCh 2111</b> (señalética).",
+    tasks:[
+      "Verificar la cantidad y el tipo de extintores según la superficie y la clase de fuego de cada área.",
+      "Confirmar la vigencia y la mantención certificada de los extintores.",
+      "Comprobar el funcionamiento y la autonomía de las luces de emergencia ante un corte de luz.",
+      "Revisar el botiquín: insumos completos y no vencidos, e identificar a su responsable.",
+      "Verificar la señalética de seguridad: pictogramas normalizados y visibilidad permanente (día y noche).",
+      "Comprobar la existencia de planos de evacuación visibles."
+    ]},
+  { t:"Análisis del personal y la organización",
+    norm:"<b>DS N° 44</b> (Comité Paritario con 25+ trabajadores o Delegado SST entre 10 y 25; participación de los trabajadores) · <b>DS N° 594, Art. 48</b>.",
+    tasks:[
+      "Determinar la dotación total y por turno para planificar capacitaciones y simulacro.",
+      "Designar, junto al empleador, los encargados de emergencia: evacuación, primeros auxilios y uso de extintores.",
+      "Acordar fechas y horarios de capacitación y simulacro que no afecten la operación.",
+      "Verificar la existencia de Comité Paritario o Delegado SST y del Reglamento Interno (RIOHS)."
+    ]},
+  { t:"Sistematización y validación (antes de redactar el plan)",
+    norm:"<b>DS N° 594, Art. 57</b> (todo establecimiento debe contar con plan de emergencia y de evacuación) · <b>DS N° 44</b> (Plan de Gestión de Riesgos de emergencias).",
+    tasks:[
+      "Consolidar toda la información recopilada: croquis, fotos, matriz de riesgos y observaciones.",
+      "Elaborar el listado de observaciones y no conformidades a corregir.",
+      "Validar el diagnóstico con la gerencia y confirmar los recursos/presupuesto disponibles.",
+      "Definir el mecanismo y la periodicidad del seguimiento (revisiones y actualizaciones).",
+      "Con la información validada, recién comenzar a redactar el plan de emergencia."
+    ]}
+];
+
+const FIELDS = ["f_empresa","f_rubro","f_dir","f_trab","f_resp","f_fecha"];
+const state = {}; // key -> {done, note}
+const keyOf = (p,t)=>`${p}-${t}`;
+const CIRC = 2*Math.PI*50;
+
+function render(){
+  const cont = document.getElementById('phases');
+  cont.innerHTML = "";
+  PHASES.forEach((ph,pi)=>{
+    const d = document.createElement('details');
+    d.className = 'card phase';
+    if(pi===0) d.open = true;
+    const total = ph.tasks.length;
+    d.innerHTML = `
+      <summary>
+        <span class="num">${pi+1}</span>
+        <span class="ptitle">
+          <span class="t">${ph.t}</span>
+          <span class="mini"><i id="mini-${pi}"></i></span>
+        </span>
+        <span class="pcount" id="cnt-${pi}">0/${total}</span>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <div class="tasks">
+        ${ph.tasks.map((tx,ti)=>{
+          const k = keyOf(pi,ti);
+          return `<div class="task" id="task-${k}">
+            <div class="check" role="checkbox" tabindex="0" onclick="toggle(${pi},${ti})" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggle(${pi},${ti})}">
+              <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>
+            </div>
+            <div class="tbody">
+              <div class="lbl" onclick="toggle(${pi},${ti})">${tx}</div>
+              <button class="note-toggle" id="nt-${k}" onclick="toggleNote('${k}')">+ Observación</button>
+              <textarea class="note" id="note-${k}" placeholder="Escribe aquí tus observaciones, mediciones o hallazgos…" oninput="saveNote('${k}',this.value)"></textarea>
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+      <div class="norm">${ph.norm}</div>`;
+    cont.appendChild(d);
+  });
+  refresh();
+}
+
+function toggle(pi,ti){
+  const k = keyOf(pi,ti);
+  state[k] = state[k] || {done:false,note:""};
+  state[k].done = !state[k].done;
+  document.getElementById('task-'+k).classList.toggle('done',state[k].done);
+  refresh();
+  lsSave();
+}
+function toggleNote(k){
+  const ta = document.getElementById('note-'+k);
+  ta.classList.toggle('open');
+  if(ta.classList.contains('open')) ta.focus();
+}
+function saveNote(k,v){
+  state[k] = state[k] || {done:false,note:""};
+  state[k].note = v;
+  const nt = document.getElementById('nt-'+k);
+  nt.classList.toggle('has', v.trim().length>0);
+  nt.textContent = v.trim().length>0 ? "✎ Observación" : "+ Observación";
+  lsSave();
+}
+
+function refresh(){
+  let gDone=0,gTot=0;
+  PHASES.forEach((ph,pi)=>{
+    let done=0;const tot=ph.tasks.length;
+    ph.tasks.forEach((_,ti)=>{ if(state[keyOf(pi,ti)]?.done) done++; });
+    gDone+=done;gTot+=tot;
+    const pct = tot? done/tot*100 : 0;
+    document.getElementById('mini-'+pi).style.width = pct+'%';
+    document.getElementById('cnt-'+pi).textContent = `${done}/${tot}`;
+  });
+  const gpct = gTot? gDone/gTot*100 : 0;
+  document.getElementById('ringFill').style.strokeDashoffset = CIRC*(1-gpct/100);
+  document.getElementById('ringPct').textContent = Math.round(gpct)+'%';
+  document.getElementById('globalCount').textContent = `${gDone} / ${gTot} tareas`;
+}
+
+function companyData(){
+  const o={};FIELDS.forEach(f=>o[f]=document.getElementById(f).value);return o;
+}
+function fmtCompany(){
+  const c=companyData();
+  return `Empresa: ${c.f_empresa||"-"}\nRubro: ${c.f_rubro||"-"}\nDirección: ${c.f_dir||"-"}\nN° trabajadores: ${c.f_trab||"-"}\nResponsable: ${c.f_resp||"-"}\nFecha: ${c.f_fecha||"-"}`;
+}
+
+function exportTxt(){
+  let out = "CHECKLIST PREVIO AL PLAN DE EMERGENCIA\n(Basado en normativa chilena: DS 594, DS 44, Ley 16.744)\n\n";
+  out += fmtCompany()+"\n\n";
+  let gDone=0,gTot=0;
+  PHASES.forEach((ph,pi)=>{
+    out += `\n=== FASE ${pi+1}: ${ph.t} ===\n`;
+    ph.tasks.forEach((tx,ti)=>{
+      const s=state[keyOf(pi,ti)]||{done:false,note:""};
+      gTot++; if(s.done)gDone++;
+      out += `[${s.done?"X":" "}] ${tx}\n`;
+      if(s.note && s.note.trim()) out += `      → Obs: ${s.note.trim()}\n`;
+    });
+  });
+  out = out.replace(/\n{3,}/g,"\n\n") + `\n\nAVANCE TOTAL: ${gDone}/${gTot} tareas (${gTot?Math.round(gDone/gTot*100):0}%)\n`;
+  download(out, (companyData().f_empresa||"checklist")+"_avance.txt", "text/plain");
+}
+function exportJson(){
+  download(JSON.stringify({company:companyData(),state},null,2),
+    (companyData().f_empresa||"checklist")+"_avance.json","application/json");
+}
+function importJson(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const data=JSON.parse(r.result);
+      if(data.company)FIELDS.forEach(f=>{if(document.getElementById(f))document.getElementById(f).value=data.company[f]||""});
+      Object.keys(state).forEach(k=>delete state[k]);
+      Object.assign(state,data.state||{});
+      render();
+      Object.keys(state).forEach(k=>{
+        if(state[k]?.done)document.getElementById('task-'+k)?.classList.add('done');
+        if(state[k]?.note){const ta=document.getElementById('note-'+k);if(ta){ta.value=state[k].note;saveNote(k,state[k].note);}}
+      });
+      refresh();
+    }catch(err){alert("No se pudo leer el archivo: "+err.message);}
+  };
+  r.readAsText(file);
+  e.target.value="";
+}
+function resetAll(){
+  if(!confirm("¿Seguro que quieres reiniciar? Se borrarán todas las marcas y observaciones."))return;
+  Object.keys(state).forEach(k=>delete state[k]);
+  FIELDS.forEach(f=>document.getElementById(f).value="");
+  try{localStorage.removeItem(LS_KEY);}catch(e){}
+  render();
+}
+function download(content,name,type){
+  const blob=new Blob([content],{type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=name;a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),100);
+}
+
+// Fecha en hora local (no UTC)
+(function(){
+  const d=new Date();
+  const iso=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  document.getElementById('f_fecha').value=iso;
+})();
+
+// localStorage: persistencia automática
+const LS_KEY='checklist_prev_emergencia';
+function lsSave(){
+  try{localStorage.setItem(LS_KEY,JSON.stringify({company:companyData(),state}));}catch(e){}
+}
+function lsLoad(){
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    if(!raw)return;
+    const data=JSON.parse(raw);
+    if(data.company)FIELDS.forEach(f=>{if(document.getElementById(f))document.getElementById(f).value=data.company[f]||'';});
+    Object.assign(state,data.state||{});
+  }catch(e){}
+}
+
+lsLoad();
+render();
+// Restaurar estado visual tras render
+Object.keys(state).forEach(k=>{
+  if(state[k]?.done)document.getElementById('task-'+k)?.classList.add('done');
+  if(state[k]?.note){
+    const ta=document.getElementById('note-'+k);
+    if(ta){ta.value=state[k].note;saveNote(k,state[k].note);}
+  }
+});
+// Guardar campos de empresa al cambiar
+FIELDS.forEach(f=>document.getElementById(f)?.addEventListener('input',lsSave));
+</script>
+
+
+</body></html>
