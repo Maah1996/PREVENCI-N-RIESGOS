@@ -1134,17 +1134,37 @@ function toggleChat(){
 function searchChunks(question, topN=8){
   if(!_normasIndex) return [];
   const words = question.toLowerCase()
-    .replace(/[¿?¡!.,;:()]/g,'')
+    .replace(/[¿?¡!.,;:()«»]/g,'')
     .split(/\s+/)
-    .filter(w => w.length > 3);
+    .filter(w => w.length > 2);
+  // Sinónimos y términos relacionados
+  const synonyms = {
+    'extintor':'extintor extintores incendio fuego',
+    'evacuacion':'evacuación evacuacion salida vía',
+    'capacitacion':'capacitación capacitacion entrenamiento simulacro',
+    'riesgo':'riesgo peligro iper miper evaluacion',
+    'señal':'señal señaletica señalética pictograma',
+    'comite':'comité paritario cphs delegado sst',
+    'botiquin':'botiquín primeros auxilios',
+    'trabajador':'trabajador personal empleado turno'
+  };
+  const expanded = [...words];
+  words.forEach(w => {
+    Object.entries(synonyms).forEach(([k,v]) => {
+      if(v.includes(w)) expanded.push(...v.split(' '));
+    });
+  });
+  const uniqueWords = [...new Set(expanded)].filter(w=>w.length>2);
+
   return _normasIndex
     .map(chunk => {
       const txt = (chunk.texto + ' ' + chunk.articulo + ' ' + chunk.nombre).toLowerCase();
-      const score = words.reduce((s, w) => s + (txt.includes(w) ? 1 : 0), 0);
+      let score = uniqueWords.reduce((s,w) => s + (txt.includes(w) ? 1 : 0), 0);
+      if(chunk.prioridad) score += 3; // artículos curados tienen prioridad
       return { ...chunk, score };
     })
     .filter(c => c.score > 0)
-    .sort((a, b) => b.score - a.score)
+    .sort((a,b) => b.score - a.score)
     .slice(0, topN);
 }
 
