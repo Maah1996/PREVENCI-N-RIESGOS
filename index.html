@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 <link href="./Checklist Previo al Plan de Emergencia · Normativa Chilena_files/css2" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <style>
   :root{
     --ink:#11201c;
@@ -633,111 +636,139 @@ function download(content,name,type){
   document.getElementById('f_fecha').value=iso;
 })();
 
-// localStorage: persistencia automática
-const LS_KEY='checklist_prev_emergencia';
-function lsSave(){
-  try{localStorage.setItem(LS_KEY,JSON.stringify({company:companyData(),state}));}catch(e){}
-}
-function lsLoad(){
+// ==================== FIREBASE ====================
+const firebaseConfig = {
+  apiKey:"AIzaSyDjBbpIU44jTiHmHvLOgEFhU7bAoKVGE9I",
+  authDomain:"prev-riegos.firebaseapp.com",
+  projectId:"prev-riegos",
+  storageBucket:"prev-riegos.firebasestorage.app",
+  messagingSenderId:"11869140676",
+  appId:"1:11869140676:web:753f5bf1b8707c2f9c7b91"
+};
+firebase.initializeApp(firebaseConfig);
+const db       = firebase.firestore();
+const fbAuth   = firebase.auth();
+const usersCol = db.collection('usuarios');
+const dataCol  = db.collection('checklist_data');
+
+// ==================== AUTH ====================
+const LS_KEY   = 'checklist_prev_emergencia';
+const SESS_KEY = 'checklist_session_v1';
+
+let _currentUser = null;
+function getCurrentUser(){ return _currentUser; }
+function getSession(){ try{ return JSON.parse(sessionStorage.getItem(SESS_KEY)); }catch(e){ return null; } }
+function setSession(o){ sessionStorage.setItem(SESS_KEY,JSON.stringify(o)); }
+
+async function initAuth(){
   try{
-    const raw=localStorage.getItem(LS_KEY);
-    if(!raw)return;
-    const data=JSON.parse(raw);
-    if(data.company)FIELDS.forEach(f=>{if(document.getElementById(f))document.getElementById(f).value=data.company[f]||'';});
-    Object.assign(state,data.state||{});
+    const snap = await usersCol.limit(1).get();
+    if(snap.empty){
+      await usersCol.doc('admin').set({
+        username:'admin', name:'Administrador', password:'Maah26',
+        role:'admin', canWrite:true, canPrint:true
+      });
+    }
   }catch(e){}
 }
 
-lsLoad();
-render();
-// Restaurar estado visual tras render
-Object.keys(state).forEach(k=>{
-  if(state[k]?.done)document.getElementById('task-'+k)?.classList.add('done');
-  if(state[k]?.resp){
-    const ta=document.getElementById('resp-'+k);
-    if(ta){ta.value=state[k].resp;saveResp(k,state[k].resp);}
-  }
-});
-// Guardar campos de empresa al cambiar
-FIELDS.forEach(f=>document.getElementById(f)?.addEventListener('input',lsSave));
-
-// ==================== AUTH ====================
-const AUTH_KEY = 'checklist_auth_v1';
-const SESS_KEY = 'checklist_session_v1';
-
-function getAuthData(){
-  try{ return JSON.parse(localStorage.getItem(AUTH_KEY))||{users:[]}; }
-  catch(e){ return {users:[]}; }
-}
-function saveAuthData(a){ try{localStorage.setItem(AUTH_KEY,JSON.stringify(a));}catch(e){} }
-
-function initAuth(){
-  const a = getAuthData();
-  if(!a.users || a.users.length===0){
-    a.users = [{
-      id:'admin', username:'admin', name:'Administrador',
-      password:'Maah26', role:'admin', canWrite:true, canPrint:true
-    }];
-    saveAuthData(a);
-  }
-}
-
-function getSession(){
-  try{ return JSON.parse(sessionStorage.getItem(SESS_KEY)); }
-  catch(e){ return null; }
-}
-function setSession(obj){ sessionStorage.setItem(SESS_KEY,JSON.stringify(obj)); }
-
-function getCurrentUser(){
-  const sess = getSession();
-  if(!sess) return null;
-  if(sess.userId==='public') return {id:'public',name:'Público',role:'public',canWrite:false,canPrint:false};
-  const u = getAuthData().users.find(u=>u.id===sess.userId);
-  return u||null;
-}
-
-function doLogin(){
+async function doLogin(){
   const username = document.getElementById('loginUser').value.trim().toLowerCase();
   const password = document.getElementById('loginPass').value;
   const err = document.getElementById('loginError');
   if(!username||!password){ err.textContent='Complete todos los campos.'; return; }
-  const a = getAuthData();
-  const user = a.users.find(u=>u.username===username && u.password===password);
-  if(!user){ err.textContent='Usuario o contraseña incorrectos.'; return; }
-  setSession({userId:user.id});
-  enterApp();
+  err.textContent='Verificando…';
+  try{
+    await fbAuth.signInAnonymously();
+    const snap = await usersCol.where('username','==',username).get();
+    const doc  = snap.docs.find(d=>d.data().password===password);
+    if(!doc){ err.textContent='Usuario o contraseña incorrectos.'; await fbAuth.signOut(); return; }
+    _currentUser = {id:doc.id,...doc.data()};
+    setSession({userId:doc.id});
+    await loadChecklistData();
+    render();
+    restoreState();
+    enterApp();
+  }catch(e){ err.textContent='Error de conexión. Verifique internet.'; console.error(e); }
 }
 
-function publicView(){
+async function publicView(){
+  try{ await fbAuth.signInAnonymously(); }catch(e){}
+  _currentUser = {id:'public',name:'Visitante',role:'public',canWrite:false,canPrint:false};
   setSession({userId:'public'});
+  render();
   enterApp();
 }
 
-function logout(){
+async function logout(){
+  try{ await fbAuth.signOut(); }catch(e){}
   sessionStorage.removeItem(SESS_KEY);
+  _currentUser = null;
   location.reload();
 }
 
 function enterApp(){
   document.getElementById('loginScreen').style.display='none';
-  const user = getCurrentUser();
-  if(!user){ location.reload(); return; }
-
-  // User bar
-  const bar = document.getElementById('userBar');
-  bar.style.display='block';
-  const badge = document.getElementById('uBadge');
+  const u = getCurrentUser();
+  if(!u){ location.reload(); return; }
+  document.getElementById('userBar').style.display='block';
   document.getElementById('uName').textContent =
-    user.role==='admin' ? user.name+' · Admin' :
-    user.role==='public'? 'Visitante (solo lectura)' : user.name;
-  if(user.role==='public') badge.classList.add('pub');
-  if(user.role==='admin'){
-    document.getElementById('adminBtn').style.display='inline-flex';
-  }
+    u.role==='admin'  ? u.name+' · Admin' :
+    u.role==='public' ? 'Visitante (solo lectura)' : u.name;
+  if(u.role==='public') document.getElementById('uBadge').classList.add('pub');
+  if(u.role==='admin')  document.getElementById('adminBtn').style.display='inline-flex';
+  if(!u.canWrite) document.body.classList.add('readonly');
+  if(!u.canPrint) document.body.classList.add('no-print');
+  FIELDS.forEach(f=>document.getElementById(f)?.addEventListener('input',lsSave));
+}
 
-  // Apply permissions via body classes
-  if(!user.canWrite) document.body.classList.add('readonly');
-  if(!user.canPrint) document.body.classList.add('no-print');
+// ---- Datos checklist ----
+let _saveTimer = null;
+function lsSave(){
+  try{ localStorage.setItem(LS_KEY,JSON.stringify({company:companyData(),state})); }catch(e){}
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(async()=>{
+    const u = getCurrentUser();
+    if(!u||u.id==='public') return;
+    try{
+      await dataCol.doc(u.id).set({
+        company:companyData(), state,
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }catch(e){ console.warn('Firestore write error:',e); }
+  },1500);
+}
+
+async function loadChecklistData(){
+  const u = getCurrentUser();
+  if(!u||u.id==='public') return;
+  try{
+    const doc = await dataCol.doc(u.id).get();
+    if(doc.exists){
+      const d=doc.data();
+      if(d.company) FIELDS.forEach(f=>{ const el=document.getElementById(f); if(el) el.value=d.company[f]||''; });
+      Object.assign(state,d.state||{});
+      return;
+    }
+  }catch(e){}
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    if(raw){ const d=JSON.parse(raw);
+      if(d.company) FIELDS.forEach(f=>{ const el=document.getElementById(f); if(el) el.value=d.company[f]||''; });
+      Object.assign(state,d.state||{});
+    }
+  }catch(e){}
+}
+
+function restoreState(){
+  Object.keys(state).forEach(k=>{
+    if(state[k]?.done) document.getElementById('task-'+k)?.classList.add('done');
+    if(state[k]?.resp){
+      const ta=document.getElementById('resp-'+k);
+      if(ta){ ta.value=state[k].resp; ta.classList.toggle('filled',state[k].resp.trim().length>0); }
+    }
+  });
+  refresh();
 }
 
 // ---- Admin Panel ----
@@ -751,11 +782,14 @@ function closeAdmin(){
   document.getElementById('adminOverlay').style.display='none';
 }
 
-function renderUserList(){
-  const a = getAuthData();
-  const cu = getCurrentUser();
+async function renderUserList(){
   const el = document.getElementById('userList');
-  el.innerHTML = a.users.map(u=>`
+  el.innerHTML='<div style="color:var(--muted);font-size:13px;padding:10px 0">Cargando…</div>';
+  try{
+    const snap = await usersCol.get();
+    const users = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.role==='admin'?-1:1);
+  const cu = getCurrentUser();
+  el.innerHTML = users.map(u=>`
     <div class="user-row" style="display:block;padding:10px 0;border-bottom:1px dashed var(--line)">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <div class="ur-info" style="flex:1;min-width:0">
@@ -786,103 +820,112 @@ function renderUserList(){
         </div>
       </div>
     </div>`).join('');
+  }catch(e){ el.innerHTML='<div style="color:#c0392b;font-size:13px">Error cargando usuarios.</div>'; }
 }
 
-function toggleEditForm(uid){
-  document.getElementById('ef-'+uid)?.classList.toggle('open');
-}
+function toggleEditForm(uid){ document.getElementById('ef-'+uid)?.classList.toggle('open'); }
 
-function saveEditUser(uid){
+async function saveEditUser(uid){
   const name  = document.getElementById('ef-name-'+uid).value.trim();
   const uname = document.getElementById('ef-user-'+uid).value.trim().toLowerCase();
   const pass  = document.getElementById('ef-pass-'+uid).value;
   const err   = document.getElementById('ef-err-'+uid);
   if(!name){ err.textContent='El nombre no puede estar vacío.'; return; }
   if(!uname){ err.textContent='El usuario no puede estar vacío.'; return; }
-  if(pass && pass.length<6){ err.textContent='La nueva contraseña debe tener al menos 6 caracteres.'; return; }
-  const a = getAuthData();
-  const dup = a.users.find(u=>u.username===uname && u.id!==uid);
-  if(dup){ err.textContent='Ese nombre de usuario ya está en uso.'; return; }
-  const u = a.users.find(u=>u.id===uid);
-  if(!u) return;
-  u.name = name;
-  if(u.role!=='admin') u.username = uname;
-  if(pass) u.password = pass;
-  saveAuthData(a);
+  if(pass&&pass.length<6){ err.textContent='Contraseña mínimo 6 caracteres.'; return; }
+  const snap = await usersCol.where('username','==',uname).get();
+  if(snap.docs.find(d=>d.id!==uid)){ err.textContent='Ese usuario ya está en uso.'; return; }
+  const doc = await usersCol.doc(uid).get();
+  const upd = {name};
+  if(doc.data().role!=='admin') upd.username=uname;
+  if(pass) upd.password=pass;
+  await usersCol.doc(uid).update(upd);
   err.textContent='';
   renderUserList();
 }
 
-function togglePwField(id, btn){
-  const inp = document.getElementById(id);
-  const show = inp.style.webkitTextSecurity !== 'disc' && inp.type !== 'password';
-  inp.style.webkitTextSecurity = show ? 'disc' : 'none';
-  inp.style.fontFamily = show ? '' : 'monospace';
-  btn.textContent = show ? '👁' : '🙈';
+function togglePwField(id,btn){
+  const inp=document.getElementById(id);
+  const show=inp.style.webkitTextSecurity!=='disc'&&inp.type!=='password';
+  inp.style.webkitTextSecurity=show?'disc':'none';
+  inp.style.fontFamily=show?'':'monospace';
+  btn.textContent=show?'👁':'🙈';
 }
 
-function togglePerm(uid,perm,val){
-  const a = getAuthData();
-  const u = a.users.find(u=>u.id===uid);
-  if(u){ u[perm]=val; saveAuthData(a); renderUserList(); }
-}
-
-function deleteUser(uid){
-  if(!confirm('¿Eliminar este usuario?')) return;
-  const a = getAuthData();
-  a.users = a.users.filter(u=>u.id!==uid);
-  saveAuthData(a);
+async function togglePerm(uid,perm,val){
+  await usersCol.doc(uid).update({[perm]:val});
   renderUserList();
 }
 
-function createUser(){
+async function deleteUser(uid){
+  if(!confirm('¿Eliminar este usuario?')) return;
+  await usersCol.doc(uid).delete();
+  await dataCol.doc(uid).delete().catch(()=>{});
+  renderUserList();
+}
+
+async function createUser(){
   const name  = document.getElementById('nuName').value.trim();
   const uname = document.getElementById('nuUser').value.trim().toLowerCase();
   const pass  = document.getElementById('nuPass').value;
   const cWrite= document.getElementById('nuWrite').checked;
   const cPrint= document.getElementById('nuPrint').checked;
   const err   = document.getElementById('nuError');
-
   if(!name||!uname||!pass){ err.textContent='Complete todos los campos.'; return; }
-  if(pass.length<6){ err.textContent='La contraseña debe tener al menos 6 caracteres.'; return; }
-  const a = getAuthData();
-  if(a.users.find(u=>u.username===uname)){ err.textContent='Ese nombre de usuario ya existe.'; return; }
-
-  a.users.push({
-    id: 'u_'+Date.now(),
-    username: uname, name, password: pass,
-    role:'user', canWrite: cWrite, canPrint: cPrint
-  });
-  saveAuthData(a);
+  if(pass.length<6){ err.textContent='Contraseña mínimo 6 caracteres.'; return; }
+  const snap = await usersCol.where('username','==',uname).get();
+  if(!snap.empty){ err.textContent='Ese usuario ya existe.'; return; }
+  await usersCol.doc('u_'+Date.now()).set({username:uname,name,password:pass,role:'user',canWrite:cWrite,canPrint:cPrint});
   err.textContent='';
-  ['nuName','nuUser','nuPass'].forEach(id=>document.getElementById(id).value='');
+  ['nuName','nuUser','nuPass'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('nuWrite').checked=false;
   document.getElementById('nuPrint').checked=false;
   renderUserList();
 }
 
-function changeMyPassword(){
+async function changeMyPassword(){
   const np  = document.getElementById('myNewPass').value;
   const err = document.getElementById('pwError');
   if(np.length<6){ err.textContent='Mínimo 6 caracteres.'; return; }
   const cu = getCurrentUser();
-  const a  = getAuthData();
-  const u  = a.users.find(u=>u.id===cu.id);
-  if(u){ u.password=np; saveAuthData(a); document.getElementById('myNewPass').value=''; err.textContent=''; alert('Contraseña actualizada.'); }
+  await usersCol.doc(cu.id).update({password:np});
+  document.getElementById('myNewPass').value='';
+  err.textContent='';
+  alert('Contraseña actualizada.');
 }
 
-function togglePw(id, btn){
-  const inp = document.getElementById(id);
-  const show = inp.type === 'password';
-  inp.type = show ? 'text' : 'password';
-  btn.textContent = show ? '🙈' : '👁';
+function togglePw(id,btn){
+  const inp=document.getElementById(id);
+  const show=inp.type==='password';
+  inp.type=show?'text':'password';
+  btn.textContent=show?'🙈':'👁';
 }
 
-// ---- Init ----
-initAuth();
-const _sess = getSession();
-if(_sess){ enterApp(); }
-// (loginScreen stays visible if no session)
+// ==================== BOOT ====================
+async function boot(){
+  render();
+  await initAuth();
+  const sess = getSession();
+  if(sess){
+    if(sess.userId==='public'){
+      _currentUser={id:'public',name:'Visitante',role:'public',canWrite:false,canPrint:false};
+      try{ await fbAuth.signInAnonymously(); }catch(e){}
+      enterApp(); return;
+    }
+    try{
+      await fbAuth.signInAnonymously();
+      const doc = await usersCol.doc(sess.userId).get();
+      if(doc.exists){
+        _currentUser={id:doc.id,...doc.data()};
+        await loadChecklistData();
+        render();
+        restoreState();
+        enterApp(); return;
+      }
+    }catch(e){ console.warn('Boot error:',e); }
+  }
+}
+boot();
 </script>
 
 
