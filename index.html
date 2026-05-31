@@ -293,6 +293,41 @@
   .btn-report{background:#1a3050;border-color:#1a3050;color:#fff}
   .btn-report:hover{background:#0f1f35}
 
+  /* ===== CHAT NORMATIVA ===== */
+  #chatBtn{position:fixed;bottom:24px;right:24px;z-index:1500;width:56px;height:56px;border-radius:50%;
+    background:var(--green);border:none;box-shadow:0 4px 16px rgba(47,143,91,.4);cursor:pointer;
+    display:none;align-items:center;justify-content:center;font-size:24px;transition:transform .2s,box-shadow .2s}
+  #chatBtn:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(47,143,91,.5)}
+  #chatBtn .cb-badge{position:absolute;top:-4px;right:-4px;background:#c0392b;color:#fff;
+    font-size:10px;font-weight:700;border-radius:50%;width:18px;height:18px;display:none;
+    align-items:center;justify-content:center;font-family:inherit}
+  #chatPanel{position:fixed;bottom:90px;right:24px;width:400px;max-width:calc(100vw - 32px);
+    height:520px;background:#fff;border-radius:18px;box-shadow:0 8px 40px rgba(0,0,0,.18);
+    z-index:1500;display:none;flex-direction:column;overflow:hidden;
+    border:1px solid var(--line)}
+  #chatPanel.open{display:flex}
+  .ch-head{background:var(--ink);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+  .ch-head .ch-icon{font-size:20px}
+  .ch-head .ch-title{flex:1;font-weight:700;font-size:14px}
+  .ch-head .ch-sub{font-size:11px;color:#9fb0a8}
+  .ch-close{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;opacity:.7;padding:0;line-height:1}
+  .ch-close:hover{opacity:1}
+  .ch-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+  .msg{max-width:88%;font-size:13.5px;line-height:1.55;padding:10px 13px;border-radius:12px}
+  .msg.bot{background:#f6f4ed;color:var(--text);align-self:flex-start;border-radius:4px 12px 12px 12px}
+  .msg.user{background:var(--green);color:#fff;align-self:flex-end;border-radius:12px 4px 12px 12px}
+  .msg.loading{background:#f6f4ed;color:var(--muted);font-style:italic}
+  .msg .source{margin-top:7px;padding-top:7px;border-top:1px solid rgba(0,0,0,.08);font-size:11.5px;color:var(--muted)}
+  .msg .source b{color:var(--green-d)}
+  .ch-input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);flex-shrink:0;background:#fff}
+  .ch-input textarea{flex:1;border:1px solid var(--line);border-radius:10px;padding:9px 12px;
+    font:inherit;font-size:13.5px;resize:none;height:42px;line-height:1.4;color:var(--text);background:#fcfbf7}
+  .ch-input textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(47,143,91,.12)}
+  .ch-send{background:var(--green);border:none;border-radius:10px;color:#fff;width:42px;height:42px;
+    cursor:pointer;font-size:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background .15s}
+  .ch-send:hover{background:var(--green-d)}
+  .ch-send:disabled{background:#ccc;cursor:default}
+
   /* PRINT */
   @media print{
     body{background:#fff;padding:0}
@@ -382,6 +417,29 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- CHAT NORMATIVA -->
+<button id="chatBtn" onclick="toggleChat()" title="Consultar normativa con IA">
+  🤖
+  <span class="cb-badge" id="chatBadge"></span>
+</button>
+<div id="chatPanel">
+  <div class="ch-head">
+    <span class="ch-icon">🤖</span>
+    <div>
+      <div class="ch-title">Asistente Normativo</div>
+      <div class="ch-sub">Consulta DS 594, DS 44, Ley 16.744 y más</div>
+    </div>
+    <button class="ch-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div class="ch-msgs" id="chatMsgs">
+    <div class="msg bot">¡Hola! Soy tu asistente de normativa chilena en prevención de riesgos. Puedes preguntarme sobre artículos, requisitos y exigencias legales. <br><br>Ejemplo: <em>«¿Cuántos extintores necesito para 300 m²?»</em></div>
+  </div>
+  <div class="ch-input">
+    <textarea id="chatInput" placeholder="Escribe tu consulta normativa…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+    <button class="ch-send" id="chatSend" onclick="sendChat()">➤</button>
   </div>
 </div>
 
@@ -1043,6 +1101,126 @@ function togglePw(id,btn){
   btn.textContent=show?'🙈':'👁';
 }
 
+// ==================== CHAT NORMATIVA ====================
+let _normasIndex = null;
+let _anthropicKey = null;
+
+async function initChat(){
+  // Cargar índice de normas
+  try{
+    const r = await fetch('normas-index.json');
+    _normasIndex = await r.json();
+    console.log(`Índice cargado: ${_normasIndex.length} fragmentos`);
+  }catch(e){ console.warn('No se pudo cargar índice normas'); }
+  // Cargar API key desde Firestore
+  try{
+    const doc = await db.collection('config').doc('api_config').get();
+    if(doc.exists) _anthropicKey = doc.data().anthropic_key;
+  }catch(e){ console.warn('No se pudo cargar API key'); }
+  // Mostrar botón solo si usuario logueado (no público)
+  const u = getCurrentUser();
+  if(u && u.role !== 'public'){
+    document.getElementById('chatBtn').style.display = 'flex';
+  }
+}
+
+function toggleChat(){
+  const panel = document.getElementById('chatPanel');
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open'))
+    document.getElementById('chatInput').focus();
+}
+
+function searchChunks(question, topN=8){
+  if(!_normasIndex) return [];
+  const words = question.toLowerCase()
+    .replace(/[¿?¡!.,;:()]/g,'')
+    .split(/\s+/)
+    .filter(w => w.length > 3);
+  return _normasIndex
+    .map(chunk => {
+      const txt = (chunk.texto + ' ' + chunk.articulo + ' ' + chunk.nombre).toLowerCase();
+      const score = words.reduce((s, w) => s + (txt.includes(w) ? 1 : 0), 0);
+      return { ...chunk, score };
+    })
+    .filter(c => c.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, topN);
+}
+
+function addMsg(text, role, sources){
+  const msgs = document.getElementById('chatMsgs');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = text.replace(/\n/g,'<br>');
+  if(sources && sources.length){
+    const srcHtml = [...new Set(sources.map(s=>`<b>${s.nombre}</b>${s.articulo?' · '+s.articulo:''} · p.${s.pagina}`))].slice(0,4).join('<br>');
+    div.innerHTML += `<div class="source">📄 Fuentes:<br>${srcHtml}</div>`;
+  }
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+async function sendChat(){
+  const inp = document.getElementById('chatInput');
+  const question = inp.value.trim();
+  if(!question) return;
+  inp.value = '';
+  document.getElementById('chatSend').disabled = true;
+  addMsg(question, 'user');
+  const loading = addMsg('Buscando en la normativa…', 'loading');
+  const chunks = searchChunks(question);
+  if(!chunks.length){
+    loading.className='msg bot';
+    loading.innerHTML='No encontré información relacionada en la normativa disponible. Intenta con otros términos.';
+    document.getElementById('chatSend').disabled = false;
+    return;
+  }
+  if(!_anthropicKey){
+    loading.className='msg bot';
+    loading.innerHTML='⚠️ No se pudo cargar la configuración del asistente.';
+    document.getElementById('chatSend').disabled = false;
+    return;
+  }
+  try{
+    const context = chunks.map(c=>`[${c.nombre}${c.articulo?' - '+c.articulo:''} p.${c.pagina}]: ${c.texto}`).join('\n\n');
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'x-api-key': _anthropicKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5',
+        max_tokens: 600,
+        messages:[{ role:'user', content:
+          `Eres un asistente experto en normativa chilena de prevención de riesgos laborales.
+Responde la siguiente pregunta basándote ÚNICAMENTE en los fragmentos de normativa proporcionados.
+Sé directo y preciso. Menciona siempre el artículo y el documento fuente.
+Si la información no está en los fragmentos, dilo claramente.
+
+FRAGMENTOS DE NORMATIVA:
+${context}
+
+PREGUNTA: ${question}`
+        }]
+      })
+    });
+    const data = await resp.json();
+    const answer = data.content?.[0]?.text || 'Sin respuesta.';
+    loading.remove();
+    addMsg(answer, 'bot', chunks);
+  }catch(e){
+    loading.className='msg bot';
+    loading.innerHTML='Error al consultar. Verifique conexión.';
+    console.error(e);
+  }
+  document.getElementById('chatSend').disabled = false;
+}
+
 // ==================== VISTAS ====================
 function showNormativa(){
   document.getElementById('mainContent').style.display='none';
@@ -1287,7 +1465,7 @@ async function boot(){
     if(sess.userId==='public'){
       _currentUser={id:'public',name:'Visitante',role:'public',canWrite:false,canPrint:false};
       try{ await fbAuth.signInAnonymously(); }catch(e){}
-      enterApp(); return;
+      enterApp(); initChat(); return;
     }
     try{
       await fbAuth.signInAnonymously();
@@ -1297,7 +1475,9 @@ async function boot(){
         await loadChecklistData();
         render();
         restoreState();
-        enterApp(); return;
+        enterApp();
+        initChat();
+        return;
       }
     }catch(e){ console.warn('Boot error:',e); }
   }
