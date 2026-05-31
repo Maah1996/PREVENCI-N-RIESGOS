@@ -293,6 +293,24 @@
   .btn-report{background:#1a3050;border-color:#1a3050;color:#fff}
   .btn-report:hover{background:#0f1f35}
 
+  /* ===== RELOJ LED ===== */
+  #clockWidget{position:fixed;bottom:24px;left:24px;z-index:1400;background:#080808;
+    border:1px solid #2a0000;border-radius:12px;padding:14px 18px;text-align:center;
+    box-shadow:0 4px 24px rgba(0,0,0,.6),inset 0 0 30px rgba(255,0,0,.04);
+    display:none;min-width:180px}
+  .cw-city{font-family:'Courier New',monospace;font-size:10px;font-weight:700;
+    letter-spacing:.2em;color:#882200;text-shadow:0 0 6px #ff2200;margin-bottom:8px;text-transform:uppercase}
+  .cw-time{font-family:'Courier New',monospace;font-size:38px;font-weight:700;
+    color:#ff2200;text-shadow:0 0 10px #ff2200,0 0 22px #ff4400,0 0 40px #ff220055;
+    letter-spacing:4px;line-height:1}
+  .cw-date{font-family:'Courier New',monospace;font-size:12.5px;color:#cc1100;
+    text-shadow:0 0 6px #ff2200;margin-top:6px;letter-spacing:1.5px}
+  .cw-row{display:flex;justify-content:space-between;align-items:center;margin-top:7px;gap:10px}
+  .cw-temp{font-family:'Courier New',monospace;font-size:13px;font-weight:700;
+    color:#ff4400;text-shadow:0 0 8px #ff2200;letter-spacing:1px}
+  .cw-label{font-family:'Courier New',monospace;font-size:9px;color:#550000;
+    letter-spacing:.15em;text-transform:uppercase}
+
   /* ===== CHAT NORMATIVA ===== */
   #chatBtn{position:fixed;bottom:24px;right:24px;z-index:1500;width:56px;height:56px;border-radius:50%;
     background:var(--green);border:none;box-shadow:0 4px 16px rgba(47,143,91,.4);cursor:pointer;
@@ -332,7 +350,7 @@
   @media print{
     body{background:#fff;padding:0}
     .hero{background:#fff;color:#000;border-bottom:2px solid #000}
-    .hero::before,.ring,.toolbar,.chev,.note-toggle,.guide-toggle{display:none!important}
+    .hero::before,.ring,.toolbar,.chev,.note-toggle,.guide-toggle,#clockWidget,#chatBtn,#chatPanel{display:none!important}
     .hero h1,.badge,.hero .norms span,.ptitle .t,.num{color:#000!important;background:none!important}
     .num{border:1px solid #000}
     .phase{break-inside:avoid}
@@ -417,6 +435,24 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- RELOJ LED -->
+<div id="clockWidget">
+  <div class="cw-city">● Punta Arenas</div>
+  <div class="cw-time" id="cwTime">00:00:00</div>
+  <div class="cw-date" id="cwDate">DOM 01/01/2026</div>
+  <div class="cw-row">
+    <div>
+      <div class="cw-temp" id="cwTemp">--°C</div>
+      <div class="cw-label">Temperatura</div>
+    </div>
+    <div style="border-left:1px solid #2a0000;height:30px"></div>
+    <div>
+      <div class="cw-temp" id="cwWind">--</div>
+      <div class="cw-label">Viento km/h</div>
+    </div>
   </div>
 </div>
 
@@ -1101,6 +1137,41 @@ function togglePw(id,btn){
   btn.textContent=show?'🙈':'👁';
 }
 
+// ==================== RELOJ LED ====================
+const DAYS  = ['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'];
+
+function updateClock(){
+  const n = new Date();
+  const h = String(n.getHours()).padStart(2,'0');
+  const m = String(n.getMinutes()).padStart(2,'0');
+  const s = String(n.getSeconds()).padStart(2,'0');
+  document.getElementById('cwTime').textContent = `${h}:${m}:${s}`;
+  const d = String(n.getDate()).padStart(2,'0');
+  const mo= String(n.getMonth()+1).padStart(2,'0');
+  const y = n.getFullYear();
+  document.getElementById('cwDate').textContent = `${DAYS[n.getDay()]} ${d}/${mo}/${y}`;
+}
+
+async function loadWeather(){
+  try{
+    // Punta Arenas: lat -53.1638, lon -70.9171
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-53.1638&longitude=-70.9171&current_weather=true');
+    const d = await r.json();
+    const temp = d.current_weather.temperature;
+    const wind = Math.round(d.current_weather.windspeed);
+    document.getElementById('cwTemp').textContent = `${temp}°C`;
+    document.getElementById('cwWind').textContent = `${wind}`;
+  }catch(e){}
+}
+
+function initClock(){
+  document.getElementById('clockWidget').style.display='block';
+  updateClock();
+  setInterval(updateClock, 1000);
+  loadWeather();
+  setInterval(loadWeather, 300000); // actualiza cada 5 min
+}
+
 // ==================== CHAT NORMATIVA ====================
 let _normasIndex = null;
 let _anthropicKey = null;
@@ -1485,7 +1556,7 @@ async function boot(){
     if(sess.userId==='public'){
       _currentUser={id:'public',name:'Visitante',role:'public',canWrite:false,canPrint:false};
       try{ await fbAuth.signInAnonymously(); }catch(e){}
-      enterApp(); initChat(); return;
+      enterApp(); initChat(); initClock(); return;
     }
     try{
       await fbAuth.signInAnonymously();
@@ -1497,6 +1568,7 @@ async function boot(){
         restoreState();
         enterApp();
         initChat();
+        initClock();
         return;
       }
     }catch(e){ console.warn('Boot error:',e); }
