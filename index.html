@@ -208,6 +208,18 @@
   .perm-perms{display:flex;flex-direction:column;gap:5px}
   .del-user{background:none;border:1px solid #e7c9c9;color:#9a3535;border-radius:7px;font-size:11.5px;padding:4px 8px;cursor:pointer;font-family:inherit}
   .del-user:hover{background:#fdf4f4}
+  .edit-user{background:none;border:1px solid var(--line);color:var(--ink);border-radius:7px;font-size:11.5px;padding:4px 8px;cursor:pointer;font-family:inherit}
+  .edit-user:hover{background:#f5f5f2}
+  .edit-form{display:none;margin-top:10px;background:#f9f8f4;border-radius:10px;padding:14px;border:1px solid var(--line)}
+  .edit-form.open{display:block}
+  .edit-form .field{margin-bottom:9px}
+  .edit-form .field label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  .edit-form .field input{width:100%;border:1px solid var(--line);border-radius:7px;padding:8px 10px;font:inherit;font-size:13px;color:var(--text);background:#fff}
+  .edit-form .field input:focus{outline:none;border-color:var(--green)}
+  .edit-form .ef-actions{display:flex;gap:8px;margin-top:10px}
+  .ef-actions .btn-save{background:var(--green);border:none;border-radius:8px;color:#fff;font:inherit;font-weight:600;font-size:13px;padding:8px 16px;cursor:pointer;flex:1}
+  .ef-actions .btn-cancel{background:none;border:1px solid var(--line);border-radius:8px;color:var(--muted);font:inherit;font-size:13px;padding:8px 12px;cursor:pointer}
+  .edit-form .ef-error{color:#c0392b;font-size:12px;min-height:14px}
   .nuf .field{margin-bottom:10px}
   .nuf .field label{display:block;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
   .nuf .field input[type=text],.nuf .field input[type=password]{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font:inherit;font-size:13.5px;color:var(--text);background:#fcfbf7;transition:border-color .15s}
@@ -685,7 +697,7 @@ function getCurrentUser(){
 }
 
 function doLogin(){
-  const username = document.getElementById('loginUser').value.trim();
+  const username = document.getElementById('loginUser').value.trim().toLowerCase();
   const password = document.getElementById('loginPass').value;
   const err = document.getElementById('loginError');
   if(!username||!password){ err.textContent='Complete todos los campos.'; return; }
@@ -744,22 +756,54 @@ function renderUserList(){
   const cu = getCurrentUser();
   const el = document.getElementById('userList');
   el.innerHTML = a.users.map(u=>`
-    <div class="user-row">
-      <div class="ur-info">
-        <div class="un">${u.name}</div>
-        <div class="ur">@${u.username}${u.role==='admin'?' · Administrador':''}</div>
+    <div class="user-row" style="display:block;padding:10px 0;border-bottom:1px dashed var(--line)">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <div class="ur-info" style="flex:1;min-width:0">
+          <div class="un">${u.name}</div>
+          <div class="ur">@${u.username}${u.role==='admin'?' · Administrador':''}</div>
+        </div>
+        <div class="perm-perms">
+          ${u.role!=='admin'?`
+          <label class="perm-tag${u.canWrite?' on':''}">
+            <input type="checkbox" ${u.canWrite?'checked':''} onchange="togglePerm('${u.id}','canWrite',this.checked)"> ✏ Escribir
+          </label>
+          <label class="perm-tag${u.canPrint?' on':''}">
+            <input type="checkbox" ${u.canPrint?'checked':''} onchange="togglePerm('${u.id}','canPrint',this.checked)"> 🖨 Imprimir
+          </label>`:'<span style="font-size:12px;color:var(--muted)">Todos los permisos</span>'}
+        </div>
+        <button class="edit-user" onclick="toggleEditForm('${u.id}')">✎ Editar</button>
+        ${u.id!==cu.id&&u.role!=='admin'?`<button class="del-user" onclick="deleteUser('${u.id}')">✕</button>`:''}
       </div>
-      <div class="perm-perms">
-        ${u.role!=='admin'?`
-        <label class="perm-tag${u.canWrite?' on':''}">
-          <input type="checkbox" ${u.canWrite?'checked':''} onchange="togglePerm('${u.id}','canWrite',this.checked)"> ✏ Escribir
-        </label>
-        <label class="perm-tag${u.canPrint?' on':''}">
-          <input type="checkbox" ${u.canPrint?'checked':''} onchange="togglePerm('${u.id}','canPrint',this.checked)"> 🖨 Imprimir
-        </label>`:'<span style="font-size:12px;color:var(--muted)">Todos los permisos</span>'}
+      <div class="edit-form" id="ef-${u.id}">
+        <div class="field"><label>Nombre completo</label><input type="text" id="ef-name-${u.id}" value="${u.name}"></div>
+        <div class="field"><label>Contraseña nueva</label><div class="pw-wrap"><input type="password" id="ef-pass-${u.id}" placeholder="Dejar en blanco para no cambiar"><button type="button" class="pw-eye" onclick="togglePw('ef-pass-${u.id}',this)" tabindex="-1">👁</button></div></div>
+        <div class="ef-error" id="ef-err-${u.id}"></div>
+        <div class="ef-actions">
+          <button class="btn-save" onclick="saveEditUser('${u.id}')">Guardar cambios</button>
+          <button class="btn-cancel" onclick="toggleEditForm('${u.id}')">Cancelar</button>
+        </div>
       </div>
-      ${u.id!==cu.id&&u.role!=='admin'?`<button class="del-user" onclick="deleteUser('${u.id}')">Eliminar</button>`:'<span></span>'}
     </div>`).join('');
+}
+
+function toggleEditForm(uid){
+  document.getElementById('ef-'+uid)?.classList.toggle('open');
+}
+
+function saveEditUser(uid){
+  const name = document.getElementById('ef-name-'+uid).value.trim();
+  const pass = document.getElementById('ef-pass-'+uid).value;
+  const err  = document.getElementById('ef-err-'+uid);
+  if(!name){ err.textContent='El nombre no puede estar vacío.'; return; }
+  if(pass && pass.length<6){ err.textContent='La contraseña debe tener al menos 6 caracteres.'; return; }
+  const a = getAuthData();
+  const u = a.users.find(u=>u.id===uid);
+  if(!u) return;
+  u.name = name;
+  if(pass) u.password = pass;
+  saveAuthData(a);
+  err.textContent='';
+  renderUserList();
 }
 
 function togglePerm(uid,perm,val){
