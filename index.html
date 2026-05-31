@@ -146,10 +146,22 @@
 
   @media(max-width:768px){
     /* Hero: no sticky en móvil, más compacto */
-    .hero{position:relative;top:auto;padding:18px 0 14px;overflow:hidden}
-    .hero .wrap{flex-wrap:nowrap;gap:10px;align-items:center;padding:0 14px}
-    /* Ocultar reloj en móvil — no hay espacio */
-    #clockWidget{display:none!important}
+    .hero{position:relative;top:auto;padding:14px 0 12px;overflow:hidden}
+    .hero .wrap{flex-wrap:wrap;gap:8px;align-items:flex-start;padding:0 14px}
+    .hero .wrap > div[style]{order:1;width:100%}
+    #clockWidget{order:0;width:auto}
+    /* Reloj compacto en móvil — 1 línea horizontal */
+    #clockWidget{
+      display:flex!important;flex-direction:row;align-items:center;
+      gap:10px;padding:4px 12px;border-radius:6px;width:auto;
+      flex-wrap:nowrap;justify-content:flex-start;
+    }
+    .cw-city{display:none}
+    .cw-time{font-size:17px;letter-spacing:2px}
+    .cw-date{display:none}
+    .cw-row{margin-top:0;gap:8px;border-left:1px solid rgba(255,255,255,.2);padding-left:8px}
+    .cw-temp{font-size:13px}
+    .cw-label{display:none}
     /* Título más pequeño */
     .hero h1{font-size:clamp(18px,5vw,26px);line-height:1.15}
     .hero p.sub{font-size:13px}
