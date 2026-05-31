@@ -1108,7 +1108,7 @@ let _anthropicKey = null;
 async function initChat(){
   // Cargar índice de normas
   try{
-    const r = await fetch('normas-index.json?v=2');
+    const r = await fetch(`normas-index.json?t=${Date.now()}`, {cache:'no-store'});
     _normasIndex = await r.json();
     console.log(`Índice cargado: ${_normasIndex.length} fragmentos`);
   }catch(e){ console.warn('No se pudo cargar índice normas'); }
