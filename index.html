@@ -240,6 +240,32 @@
   body.readonly .toolbar{display:none!important}
   body.no-print #printBtn{display:none!important}
 
+  /* NORMATIVA SECTION */
+  .norm-section{padding:22px 0 8px}
+  .norm-section h2{font-family:'Fraunces',serif;font-weight:600;font-size:19px;color:var(--ink);margin-bottom:14px}
+  .norm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+  .norm-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;
+    transition:transform .15s,box-shadow .2s,border-color .2s;display:flex;flex-direction:column;gap:8px}
+  .norm-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(17,32,28,.1);border-color:var(--green)}
+  .norm-card .nc-icon{font-size:26px;line-height:1}
+  .norm-card .nc-title{font-weight:700;font-size:14px;color:var(--ink);line-height:1.2}
+  .norm-card .nc-desc{font-size:12px;color:var(--muted);line-height:1.4;flex:1}
+  .norm-card .nc-btn{align-self:flex-start;font-size:11.5px;font-weight:600;color:var(--green-d);
+    background:var(--green-light);border:1px solid #b6e8cc;border-radius:6px;padding:4px 10px;
+    font-family:inherit;cursor:pointer;margin-top:4px}
+  .norm-card:hover .nc-btn{background:#d5f5e3}
+
+  /* PDF VIEWER MODAL */
+  #pdfOverlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2990;display:none;flex-direction:column}
+  #pdfOverlay.open{display:flex}
+  .pdf-toolbar{background:var(--ink);color:#fff;padding:10px 18px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+  .pdf-toolbar .pt-title{flex:1;font-weight:700;font-size:15px}
+  .pdf-toolbar .pt-close{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;opacity:.8;padding:0;line-height:1}
+  .pdf-toolbar .pt-close:hover{opacity:1}
+  .pdf-toolbar a.pt-dl{color:var(--amber);font-size:12.5px;font-weight:600;text-decoration:none;border:1px solid var(--amber);border-radius:6px;padding:4px 10px}
+  .pdf-toolbar a.pt-dl:hover{background:rgba(224,150,47,.15)}
+  #pdfFrame{flex:1;border:none;background:#525659}
+
   /* DIAGNOSTICS PANEL */
   #diagOverlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1990;display:none}
   #diagPanel{position:fixed;top:0;left:-520px;width:500px;max-width:95vw;height:100%;background:#fff;z-index:1991;box-shadow:4px 0 32px rgba(0,0,0,.18);display:flex;flex-direction:column;transition:left .3s cubic-bezier(.2,.7,.2,1);overflow-y:auto}
@@ -359,6 +385,16 @@
   </div>
 </div>
 
+<!-- PDF VIEWER MODAL -->
+<div id="pdfOverlay">
+  <div class="pdf-toolbar">
+    <span class="pt-title" id="pdfTitle">Documento</span>
+    <a class="pt-dl" id="pdfDl" href="#" target="_blank">⬇ Descargar</a>
+    <button class="pt-close" onclick="closePdf()">✕</button>
+  </div>
+  <iframe id="pdfFrame" src=""></iframe>
+</div>
+
 <!-- DIAGNOSTICS PANEL -->
 <div id="diagOverlay" onclick="closeDiagPanel()"></div>
 <div id="diagPanel">
@@ -394,6 +430,55 @@
 </header>
 
 <div class="wrap">
+
+  <!-- Normativa de Referencia -->
+  <section class="norm-section reveal" style="animation-delay:.04s">
+    <h2>📚 Normativa de Referencia</h2>
+    <div class="norm-grid">
+      <div class="norm-card" onclick="openPdf('pdfs/DS594.pdf','DS N° 594 — Condiciones Sanitarias en el Trabajo')">
+        <div class="nc-icon">⚖️</div>
+        <div class="nc-title">DS N° 594</div>
+        <div class="nc-desc">Condiciones Sanitarias y Ambientales Básicas en los Lugares de Trabajo. MINSAL 1999.</div>
+        <button class="nc-btn">📖 Ver documento</button>
+      </div>
+      <div class="norm-card" onclick="openPdf('pdfs/DS44.pdf','DS N° 44 — Gestión Preventiva de Riesgos Laborales')">
+        <div class="nc-icon">🛡️</div>
+        <div class="nc-title">DS N° 44</div>
+        <div class="nc-desc">Gestión Preventiva de Riesgos para un Entorno de Trabajo Seguro y Saludable. Min. Trabajo 2024.</div>
+        <button class="nc-btn">📖 Ver documento</button>
+      </div>
+      <div class="norm-card" onclick="openPdf('pdfs/Ley16744.pdf','Ley N° 16.744 — Accidentes del Trabajo y Enfermedades Profesionales')">
+        <div class="nc-icon">📜</div>
+        <div class="nc-title">Ley N° 16.744</div>
+        <div class="nc-desc">Normas sobre Accidentes del Trabajo y Enfermedades Profesionales. Base del sistema SST en Chile.</div>
+        <button class="nc-btn">📖 Ver documento</button>
+      </div>
+      <div class="norm-card" onclick="openPdf('pdfs/NCh1411.pdf','NCh 1411 — Letreros y Señales de Seguridad')">
+        <div class="nc-icon">🚧</div>
+        <div class="nc-title">NCh 1411</div>
+        <div class="nc-desc">Norma chilena de Letreros y Señales de Seguridad. Colores, pictogramas y dimensiones normalizados.</div>
+        <button class="nc-btn">📖 Ver documento</button>
+      </div>
+      <div class="norm-card" onclick="openPdf('pdfs/Guia-IPER.pdf','Guía para la Identificación y Evaluación de Riesgos (IPER)')">
+        <div class="nc-icon">🔍</div>
+        <div class="nc-title">Guía IPER</div>
+        <div class="nc-desc">Guía para la Identificación y Evaluación de Riesgos en los Lugares de Trabajo. DT 2024.</div>
+        <button class="nc-btn">📖 Ver documento</button>
+      </div>
+      <div class="norm-card" onclick="openPdf('pdfs/Normativa-Fuego.pdf','Normativa de Regulación del Fuego')">
+        <div class="nc-icon">🔥</div>
+        <div class="nc-title">Normativa del Fuego</div>
+        <div class="nc-desc">Regulación sobre control y prevención de incendios en establecimientos. Referencia para extintores y redes.</div>
+        <button class="nc-btn">📖 Ver documento</button>
+      </div>
+      <div class="norm-card" onclick="openPdf('pdfs/OGUC.pdf','OGUC — Ordenanza General de Urbanismo y Construcciones')">
+        <div class="nc-icon">🏗️</div>
+        <div class="nc-title">OGUC</div>
+        <div class="nc-desc">Ordenanza General de Urbanismo y Construcciones. DS 22 · Abril 2024. Referencia para vías de evacuación.</div>
+        <button class="nc-btn">📖 Ver documento</button>
+      </div>
+    </div>
+  </section>
 
   <!-- Datos de la empresa -->
   <section class="section reveal" style="animation-delay:.05s">
@@ -945,6 +1030,22 @@ function togglePw(id,btn){
   inp.type=show?'text':'password';
   btn.textContent=show?'🙈':'👁';
 }
+
+// ==================== PDF VIEWER ====================
+function openPdf(path, title){
+  document.getElementById('pdfTitle').textContent = title;
+  document.getElementById('pdfFrame').src = path;
+  document.getElementById('pdfDl').href = path;
+  document.getElementById('pdfOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePdf(){
+  document.getElementById('pdfOverlay').classList.remove('open');
+  document.getElementById('pdfFrame').src = '';
+  document.body.style.overflow = '';
+}
+// Cerrar con tecla Escape
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePdf(); });
 
 // ==================== DIAGNÓSTICOS ====================
 let _allDiags = [];
