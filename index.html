@@ -240,6 +240,33 @@
   body.readonly .toolbar{display:none!important}
   body.no-print #printBtn{display:none!important}
 
+  /* DIAGNOSTICS PANEL */
+  #diagOverlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1990;display:none}
+  #diagPanel{position:fixed;top:0;left:-520px;width:500px;max-width:95vw;height:100%;background:#fff;z-index:1991;box-shadow:4px 0 32px rgba(0,0,0,.18);display:flex;flex-direction:column;transition:left .3s cubic-bezier(.2,.7,.2,1);overflow-y:auto}
+  #diagPanel.open{left:0}
+  .dp-head{background:var(--ink);color:#fff;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+  .dp-head h3{font-family:'Fraunces',serif;font-size:17px;margin:0}
+  .dp-close{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;line-height:1;padding:0;opacity:.8}
+  .dp-body{padding:20px 22px;flex:1}
+  .dp-search{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font:inherit;font-size:14px;color:var(--text);background:#fcfbf7;margin-bottom:14px}
+  .dp-search:focus{outline:none;border-color:var(--green)}
+  .diag-row{padding:12px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+  .diag-row:last-child{border-bottom:none}
+  .diag-row:hover .diag-empresa{text-decoration:underline}
+  .diag-empresa{font-weight:700;font-size:14px;color:var(--ink)}
+  .diag-meta{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .diag-progress{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;margin-top:4px}
+  .diag-progress .bar{width:80px;height:6px;background:#eceadf;border-radius:99px;overflow:hidden}
+  .diag-progress .bar i{display:block;height:100%;background:var(--green)}
+  .diag-actions{display:flex;gap:6px;margin-top:8px}
+  .da-btn{background:none;border:1px solid var(--line);border-radius:7px;font:inherit;font-size:12px;padding:4px 10px;cursor:pointer;color:var(--ink)}
+  .da-btn:hover{background:#f5f5f2}
+  .da-btn.danger{border-color:#e7c9c9;color:#9a3535}
+  .da-btn.danger:hover{background:#fdf4f4}
+  #diagEmpty{text-align:center;color:var(--muted);font-size:13.5px;padding:30px 0}
+  .btn-report{background:#1a3050;border-color:#1a3050;color:#fff}
+  .btn-report:hover{background:#0f1f35}
+
   /* PRINT */
   @media print{
     body{background:#fff;padding:0}
@@ -312,6 +339,7 @@
           <div class="perms">
             <label><input type="checkbox" id="nuWrite"> Puede escribir y guardar</label>
             <label><input type="checkbox" id="nuPrint"> Puede imprimir</label>
+            <label><input type="checkbox" id="nuReport"> Puede generar Informe Word</label>
           </div>
         </div>
         <div id="nuError"></div>
@@ -328,6 +356,19 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- DIAGNOSTICS PANEL -->
+<div id="diagOverlay" onclick="closeDiagPanel()"></div>
+<div id="diagPanel">
+  <div class="dp-head">
+    <h3>📋 Diagnósticos guardados</h3>
+    <button class="dp-close" onclick="closeDiagPanel()">✕</button>
+  </div>
+  <div class="dp-body">
+    <input class="dp-search" id="diagSearch" type="text" placeholder="Buscar por empresa o fecha…" oninput="filterDiagnosticos(this.value)">
+    <div id="diagList"><div id="diagEmpty">Cargando…</div></div>
   </div>
 </div>
 
@@ -367,10 +408,9 @@
         <div class="field"><label>Fecha</label><input id="f_fecha" type="date"></div>
       </div>
       <div class="toolbar">
-        <button class="btn primary" onclick="exportTxt()">⬇ Exportar resumen (.txt)</button>
-        <button class="btn" onclick="exportJson()">💾 Guardar avance (.json)</button>
-        <button class="btn ghost" onclick="document.getElementById(&#39;imp&#39;).click()">📂 Cargar avance</button>
-        <input id="imp" type="file" accept=".json" style="display:none" onchange="importJson(event)">
+        <button class="btn primary" onclick="saveDiagnostico()">💾 Guardar diagnóstico</button>
+        <button class="btn" onclick="openDiagPanel()">📋 Mis diagnósticos</button>
+        <button id="reportBtn" class="btn btn-report" style="display:none" onclick="generateWordDoc()">📄 Informe Word</button>
         <button id="printBtn" class="btn ghost" onclick="window.print()">🖨 Imprimir / PDF</button>
         <button class="btn danger" onclick="resetAll()">↺ Reiniciar</button>
       </div>
@@ -719,6 +759,7 @@ function enterApp(){
   if(u.role==='admin')  document.getElementById('adminBtn').style.display='inline-flex';
   if(!u.canWrite) document.body.classList.add('readonly');
   if(!u.canPrint) document.body.classList.add('no-print');
+  if(u.canReport||u.role==='admin') document.getElementById('reportBtn').style.display='inline-flex';
   FIELDS.forEach(f=>document.getElementById(f)?.addEventListener('input',lsSave));
 }
 
@@ -803,6 +844,9 @@ async function renderUserList(){
           </label>
           <label class="perm-tag${u.canPrint?' on':''}">
             <input type="checkbox" ${u.canPrint?'checked':''} onchange="togglePerm('${u.id}','canPrint',this.checked)"> 🖨 Imprimir
+          </label>
+          <label class="perm-tag${u.canReport?' on':''}">
+            <input type="checkbox" ${u.canReport?'checked':''} onchange="togglePerm('${u.id}','canReport',this.checked)"> 📄 Informe Word
           </label>`:'<span style="font-size:12px;color:var(--muted)">Todos los permisos</span>'}
         </div>
         <button class="edit-user" onclick="toggleEditForm('${u.id}')">✎ Editar</button>
@@ -868,14 +912,15 @@ async function createUser(){
   const name  = document.getElementById('nuName').value.trim();
   const uname = document.getElementById('nuUser').value.trim().toLowerCase();
   const pass  = document.getElementById('nuPass').value;
-  const cWrite= document.getElementById('nuWrite').checked;
-  const cPrint= document.getElementById('nuPrint').checked;
-  const err   = document.getElementById('nuError');
+  const cWrite = document.getElementById('nuWrite').checked;
+  const cPrint = document.getElementById('nuPrint').checked;
+  const cReport= document.getElementById('nuReport').checked;
+  const err    = document.getElementById('nuError');
   if(!name||!uname||!pass){ err.textContent='Complete todos los campos.'; return; }
   if(pass.length<6){ err.textContent='Contraseña mínimo 6 caracteres.'; return; }
   const snap = await usersCol.where('username','==',uname).get();
   if(!snap.empty){ err.textContent='Ese usuario ya existe.'; return; }
-  await usersCol.doc('u_'+Date.now()).set({username:uname,name,password:pass,role:'user',canWrite:cWrite,canPrint:cPrint});
+  await usersCol.doc('u_'+Date.now()).set({username:uname,name,password:pass,role:'user',canWrite:cWrite,canPrint:cPrint,canReport:cReport});
   err.textContent='';
   ['nuName','nuUser','nuPass'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('nuWrite').checked=false;
@@ -899,6 +944,211 @@ function togglePw(id,btn){
   const show=inp.type==='password';
   inp.type=show?'text':'password';
   btn.textContent=show?'🙈':'👁';
+}
+
+// ==================== DIAGNÓSTICOS ====================
+let _allDiags = [];
+
+async function saveDiagnostico(){
+  const u = getCurrentUser();
+  if(!u||u.id==='public'){ alert('Debe iniciar sesión para guardar.'); return; }
+  const c = companyData();
+  if(!c.f_empresa){ alert('Ingrese al menos el nombre de la empresa antes de guardar.'); return; }
+  let gDone=0,gTot=0;
+  PHASES.forEach((ph,pi)=>{ ph.tasks.forEach((_,ti)=>{ gTot++; if(state[keyOf(pi,ti)]?.done) gDone++; }); });
+  const id = 'diag_'+u.id+'_'+Date.now();
+  const diagData = {
+    id, userId:u.id, empresa:c.f_empresa, rubro:c.f_rubro,
+    responsable:c.f_resp, fecha:c.f_fecha,
+    company:c, state:JSON.parse(JSON.stringify(state)),
+    done:gDone, total:gTot,
+    savedAt:firebase.firestore.FieldValue.serverTimestamp()
+  };
+  try{
+    await db.collection('diagnosticos').doc(id).set(diagData);
+    alert(`Diagnóstico de "${c.f_empresa}" guardado correctamente.`);
+  }catch(e){ alert('Error al guardar. Verifique conexión.'); console.error(e); }
+}
+
+async function openDiagPanel(){
+  document.getElementById('diagPanel').classList.add('open');
+  document.getElementById('diagOverlay').style.display='block';
+  document.getElementById('diagSearch').value='';
+  await loadDiagnosticos();
+}
+function closeDiagPanel(){
+  document.getElementById('diagPanel').classList.remove('open');
+  document.getElementById('diagOverlay').style.display='none';
+}
+
+async function loadDiagnosticos(){
+  const el=document.getElementById('diagList');
+  el.innerHTML='<div id="diagEmpty">Cargando…</div>';
+  const u=getCurrentUser();
+  try{
+    let q = db.collection('diagnosticos').orderBy('savedAt','desc');
+    if(u.role!=='admin') q=q.where('userId','==',u.id);
+    const snap=await q.get();
+    _allDiags=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderDiagList(_allDiags);
+  }catch(e){ el.innerHTML='<div id="diagEmpty">Error cargando diagnósticos.</div>'; }
+}
+
+function filterDiagnosticos(q){
+  const lower=q.toLowerCase();
+  renderDiagList(_allDiags.filter(d=>
+    (d.empresa||'').toLowerCase().includes(lower)||
+    (d.fecha||'').includes(lower)||
+    (d.responsable||'').toLowerCase().includes(lower)
+  ));
+}
+
+function renderDiagList(diags){
+  const el=document.getElementById('diagList');
+  if(!diags.length){ el.innerHTML='<div id="diagEmpty">No hay diagnósticos guardados.</div>'; return; }
+  el.innerHTML=diags.map(d=>{
+    const pct=d.total?Math.round(d.done/d.total*100):0;
+    const dt=d.savedAt?.toDate?d.savedAt.toDate().toLocaleDateString('es-CL'):d.fecha||'—';
+    return `<div class="diag-row">
+      <div class="diag-empresa">${d.empresa||'Sin nombre'}</div>
+      <div class="diag-meta">${d.rubro||''} · Guardado: ${dt} · Responsable: ${d.responsable||'—'}</div>
+      <div class="diag-progress">
+        <div class="bar"><i style="width:${pct}%"></i></div>
+        ${d.done}/${d.total} tareas (${pct}%)
+      </div>
+      <div class="diag-actions">
+        <button class="da-btn" onclick="loadDiagnosticoView('${d.id}')">📂 Abrir</button>
+        <button class="da-btn" onclick="printDiagnostico('${d.id}')">🖨 Imprimir</button>
+        <button class="da-btn danger" onclick="deleteDiagnostico('${d.id}')">✕ Eliminar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function loadDiagnosticoView(id){
+  const diag=_allDiags.find(d=>d.id===id);
+  if(!diag) return;
+  Object.keys(state).forEach(k=>delete state[k]);
+  Object.assign(state,diag.state||{});
+  if(diag.company) FIELDS.forEach(f=>{ const el=document.getElementById(f); if(el) el.value=diag.company[f]||''; });
+  render(); restoreState();
+  closeDiagPanel();
+}
+
+function printDiagnostico(id){
+  loadDiagnosticoView(id).then(()=>setTimeout(()=>window.print(),400));
+}
+
+async function deleteDiagnostico(id){
+  if(!confirm('¿Eliminar este diagnóstico? Esta acción no se puede deshacer.')) return;
+  await db.collection('diagnosticos').doc(id).delete();
+  _allDiags=_allDiags.filter(d=>d.id!==id);
+  renderDiagList(_allDiags);
+}
+
+// ==================== INFORME WORD ====================
+function generateWordDoc(){
+  const u=getCurrentUser();
+  if(!u||(u.role!=='admin'&&!u.canReport)){ alert('No tiene permiso para generar el informe Word.'); return; }
+  const c=companyData();
+  let gDone=0,gTot=0;
+  PHASES.forEach((ph,pi)=>{ ph.tasks.forEach((_,ti)=>{ gTot++; if(state[keyOf(pi,ti)]?.done) gDone++; }); });
+  const pct=gTot?Math.round(gDone/gTot*100):0;
+  const fecha=new Date().toLocaleDateString('es-CL');
+
+  let fasesHtml='';
+  let noConf=[];
+  PHASES.forEach((ph,pi)=>{
+    fasesHtml+=`<h2 style="font-size:13pt;color:#11201c;border-bottom:2px solid #2f8f5b;padding-bottom:4px;margin-top:24pt">FASE ${pi+1}: ${ph.t}</h2><table width="100%" cellpadding="6" cellspacing="0" border="1" style="border-collapse:collapse;font-size:10pt;border-color:#e3e0d4">
+    <tr style="background:#f6f4ed"><th width="5%" align="center">Estado</th><th width="55%">Tarea</th><th width="40%">Hallazgo / Respuesta</th></tr>`;
+    ph.tasks.forEach((tx,ti)=>{
+      const k=keyOf(pi,ti);
+      const s=state[k]||{done:false,resp:''};
+      const icon=s.done?'<span style="color:#2f8f5b;font-weight:bold">✓</span>':'<span style="color:#c0392b;font-weight:bold">✗</span>';
+      fasesHtml+=`<tr><td align="center">${icon}</td><td>${tx.lbl}</td><td style="color:#444">${s.resp||'—'}</td></tr>`;
+      if(!s.done) noConf.push({fase:`Fase ${pi+1}`,lbl:tx.lbl,resp:s.resp||''});
+    });
+    fasesHtml+=`</table>`;
+  });
+
+  let noConfHtml='<p style="color:#888;font-style:italic">Ninguna — todas las tareas completadas.</p>';
+  if(noConf.length){
+    noConfHtml=`<table width="100%" cellpadding="6" cellspacing="0" border="1" style="border-collapse:collapse;font-size:10pt;border-color:#e3e0d4">
+    <tr style="background:#fbf0db"><th width="15%">Fase</th><th width="55%">No conformidad</th><th width="30%">Observación</th></tr>`+
+    noConf.map(n=>`<tr><td>${n.fase}</td><td>${n.lbl}</td><td style="color:#444">${n.resp||'—'}</td></tr>`).join('')+
+    `</table>`;
+  }
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <style>
+    body{font-family:Arial,sans-serif;font-size:11pt;color:#222;margin:0;padding:0}
+    @page{margin:2.5cm 2cm}
+    .membrete{border-bottom:4px solid #2f8f5b;padding-bottom:12pt;margin-bottom:18pt;display:flex;align-items:center;justify-content:space-between}
+    .membrete .logo-area{width:90pt;height:50pt;border:1pt dashed #ccc;display:flex;align-items:center;justify-content:center;font-size:8pt;color:#aaa;text-align:center}
+    .membrete .titulo{flex:1;text-align:center}
+    h1{font-size:15pt;color:#11201c;margin:0 0 4pt}
+    .sub{font-size:9pt;color:#6c7b75;margin:0}
+    .empresa-box{background:#f6f4ed;border:1pt solid #e3e0d4;border-radius:4pt;padding:10pt;margin-bottom:16pt}
+    .empresa-box table{width:100%;border-collapse:collapse}
+    .empresa-box td{padding:4pt 8pt;font-size:10pt}
+    .empresa-box td:first-child{font-weight:bold;width:35%;color:#1d3530}
+    .resumen{background:#edfbf2;border:1pt solid #2f8f5b;border-radius:4pt;padding:10pt;margin-bottom:16pt;text-align:center}
+    .resumen .num{font-size:22pt;font-weight:bold;color:#2f8f5b}
+    .firmas{margin-top:40pt;page-break-inside:avoid}
+    .firma-row{display:flex;justify-content:space-around;margin-top:20pt}
+    .firma-box{text-align:center;width:160pt}
+    .firma-box .linea{border-top:1pt solid #333;margin-bottom:4pt}
+    .firma-box p{margin:0;font-size:9pt;color:#444}
+    h2{page-break-after:avoid}
+    tr{page-break-inside:avoid}
+  </style></head><body>
+  <div class="membrete">
+    <div class="logo-area">LOGO<br>EMPRESA</div>
+    <div class="titulo">
+      <h1>DIAGNÓSTICO PREVIO AL PLAN DE EMERGENCIA</h1>
+      <p class="sub">Normativa chilena vigente · DS N° 594 · DS N° 44 · Ley N° 16.744</p>
+    </div>
+    <div style="text-align:right;font-size:9pt;color:#6c7b75">Fecha: ${c.f_fecha||fecha}<br>Folio: ${Date.now().toString().slice(-6)}</div>
+  </div>
+
+  <div class="empresa-box">
+    <table>
+      <tr><td>Empresa / Razón social:</td><td>${c.f_empresa||'—'}</td><td>Rubro / Actividad:</td><td>${c.f_rubro||'—'}</td></tr>
+      <tr><td>Dirección:</td><td>${c.f_dir||'—'}</td><td>N° de trabajadores:</td><td>${c.f_trab||'—'}</td></tr>
+      <tr><td>Responsable del diagnóstico:</td><td>${c.f_resp||'—'}</td><td>Fecha de diagnóstico:</td><td>${c.f_fecha||fecha}</td></tr>
+    </table>
+  </div>
+
+  <div class="resumen">
+    <div class="num">${pct}%</div>
+    <div style="font-size:11pt;color:#1f6b42;font-weight:bold">Avance total del diagnóstico</div>
+    <div style="font-size:10pt;color:#6c7b75;margin-top:4pt">${gDone} de ${gTot} tareas completadas · ${noConf.length} no conformidades detectadas</div>
+  </div>
+
+  ${fasesHtml}
+
+  <h2 style="font-size:13pt;color:#9a3535;border-bottom:2px solid #e0962f;padding-bottom:4pt;margin-top:24pt">NO CONFORMIDADES DETECTADAS</h2>
+  ${noConfHtml}
+
+  <div class="firmas">
+    <h2 style="font-size:12pt;color:#11201c;border-bottom:1pt solid #ccc;padding-bottom:4pt">FIRMAS Y VALIDACIÓN</h2>
+    <div class="firma-row">
+      <div class="firma-box"><div class="linea"></div><p><b>Responsable del Diagnóstico</b></p><p>${c.f_resp||'________________________________'}</p><p>Nombre y firma</p></div>
+      <div class="firma-box"><div class="linea"></div><p><b>Empleador / Representante Legal</b></p><p>${c.f_empresa||'________________________________'}</p><p>Nombre y firma</p></div>
+      <div class="firma-box"><div class="linea"></div><p><b>Asesor Técnico / Mutualidad</b></p><p>________________________________</p><p>Nombre y firma</p></div>
+    </div>
+  </div>
+
+  <p style="margin-top:30pt;font-size:8pt;color:#aaa;text-align:center">Documento generado el ${fecha} · Herramienta basada en normativa chilena vigente · No reemplaza la asesoría de un experto en prevención de riesgos.</p>
+  </body></html>`;
+
+  const blob=new Blob([html],{type:'application/msword'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`Informe_${(c.f_empresa||'empresa').replace(/\s+/g,'_')}_${fecha.replace(/\//g,'-')}.doc`;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),100);
 }
 
 // ==================== BOOT ====================
