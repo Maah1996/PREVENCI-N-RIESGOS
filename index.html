@@ -145,51 +145,62 @@
   @keyframes rise{to{opacity:1;transform:none}}
 
   @media(max-width:768px){
-    /* Hero: no sticky en móvil, más compacto */
-    .hero{position:relative;top:auto;padding:14px 0 12px;overflow:hidden}
-    .hero .wrap{flex-wrap:wrap;gap:8px;align-items:flex-start;padding:0 14px}
-    .hero .wrap > div[style]{order:1;width:100%}
-    #clockWidget{order:0;width:auto}
-    /* Reloj compacto en móvil — 1 línea horizontal */
+    /* Evitar scroll horizontal */
+    html,body{max-width:100vw;overflow-x:hidden}
+
+    /* User bar compacto */
+    #userBar .wrap{flex-wrap:wrap;gap:6px;padding:8px 12px}
+    .ubadge{font-size:11.5px}
+    .ub-btn{font-size:11.5px;padding:4px 10px}
+    #userBar .spacer{display:none}
+
+    /* Hero: no sticky, columna */
+    .hero{position:relative;top:auto;padding:14px 0 12px}
+    .hero .wrap{flex-direction:column;align-items:flex-start;gap:8px;padding:0 14px}
+
+    /* Reloj compacto — fila horizontal encima del título */
+    #clockWidget{align-self:auto}
     #clockWidget.cw-visible{
       display:flex;flex-direction:row;align-items:center;
-      gap:10px;padding:4px 12px;border-radius:6px;width:auto;
-      flex-wrap:nowrap;justify-content:flex-start;
+      gap:10px;padding:4px 12px;border-radius:6px;
     }
     .cw-city{display:none}
-    .cw-time{font-size:17px;letter-spacing:2px}
+    .cw-time{font-size:16px;letter-spacing:2px}
     .cw-date{display:none}
-    .cw-row{margin-top:0;gap:8px;border-left:1px solid rgba(255,255,255,.2);padding-left:8px}
-    .cw-temp{font-size:13px}
+    .cw-row{margin-top:0;gap:6px;border-left:1px solid rgba(255,255,255,.2);padding-left:8px}
+    .cw-temp{font-size:12px}
     .cw-label{display:none}
-    /* Título más pequeño */
-    .hero h1{font-size:clamp(18px,5vw,26px);line-height:1.15}
+
+    /* Título */
+    .hero h1{font-size:clamp(20px,6vw,28px);line-height:1.15}
     .hero p.sub{font-size:13px}
-    /* Ring más pequeño */
-    .ring svg{width:72px;height:72px}
-    .ring .pct{font-size:18px}
-    /* Empresa grid 1 columna */
+
+    /* Ocultar ring en móvil */
+    .ring{display:none}
+
+    /* Empresa */
     .company .grid{grid-template-columns:1fr}
-    /* Toolbar botones apilados */
     .toolbar{flex-direction:column;gap:8px}
     .toolbar .btn{width:100%;justify-content:center}
-    /* Normativa grid 2 col */
+
+    /* Normativa */
     .norm-grid{grid-template-columns:repeat(2,1fr)}
-    /* Chat panel ocupa ancho completo */
+
+    /* Chat */
     #chatPanel{width:calc(100vw - 24px);right:12px;bottom:72px;height:460px}
-    /* Panel admin ancho completo */
     #adminPanel{width:100%;max-width:100vw}
     #diagPanel{width:100%;max-width:100vw;left:-100%;top:auto;bottom:0;height:85vh;border-radius:16px 16px 0 0}
     #diagPanel.open{left:0}
+
+    /* Guía normativa */
+    .matrix-row{grid-template-columns:1fr}
+    .matrix-label{border-right:none;border-bottom:1px solid var(--line)}
   }
   @media(max-width:480px){
     .wrap{padding:0 10px}
     .hero .wrap{padding:0 10px}
-    .ring{display:none}
     .norm-grid{grid-template-columns:1fr}
     #chatBtn{bottom:14px;right:14px;width:48px;height:48px;font-size:20px}
-    .matrix-row{grid-template-columns:1fr}
-    .matrix-label{border-right:none;border-bottom:1px solid var(--line)}
   }
 
   /* GUÍA / EJEMPLO */
