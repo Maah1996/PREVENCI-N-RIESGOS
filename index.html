@@ -145,22 +145,39 @@
   @keyframes rise{to{opacity:1;transform:none}}
 
   @media(max-width:768px){
+    /* Hero: no sticky en móvil, más compacto */
+    .hero{position:relative;top:auto;padding:18px 0 14px;overflow:hidden}
+    .hero .wrap{flex-wrap:nowrap;gap:10px;align-items:center;padding:0 14px}
+    /* Ocultar reloj en móvil — no hay espacio */
+    #clockWidget{display:none!important}
+    /* Título más pequeño */
+    .hero h1{font-size:clamp(18px,5vw,26px);line-height:1.15}
+    .hero p.sub{font-size:13px}
+    /* Ring más pequeño */
+    .ring svg{width:72px;height:72px}
+    .ring .pct{font-size:18px}
+    /* Empresa grid 1 columna */
     .company .grid{grid-template-columns:1fr}
-    .hero .wrap{flex-direction:column;align-items:flex-start;gap:12px}
-    #clockWidget{order:-1;width:100%;box-sizing:border-box;padding:5px 14px 6px}
-    .ring{align-self:flex-end;margin-top:-60px}
-    .hero h1{font-size:clamp(20px,5vw,30px)}
-    .norm-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
-    #chatPanel{width:calc(100vw - 32px);right:16px;bottom:80px}
-    .ap-body .nuf .perms{flex-direction:column;gap:8px}
+    /* Toolbar botones apilados */
+    .toolbar{flex-direction:column;gap:8px}
+    .toolbar .btn{width:100%;justify-content:center}
+    /* Normativa grid 2 col */
+    .norm-grid{grid-template-columns:repeat(2,1fr)}
+    /* Chat panel ocupa ancho completo */
+    #chatPanel{width:calc(100vw - 24px);right:12px;bottom:72px;height:460px}
+    /* Panel admin ancho completo */
     #adminPanel{width:100%;max-width:100vw}
+    #diagPanel{width:100%;max-width:100vw;left:-100%;top:auto;bottom:0;height:85vh;border-radius:16px 16px 0 0}
+    #diagPanel.open{left:0}
   }
   @media(max-width:480px){
-    .wrap{padding:0 12px}
-    .hero{padding:18px 0 14px}
-    .cw-time{font-size:20px}
+    .wrap{padding:0 10px}
+    .hero .wrap{padding:0 10px}
     .ring{display:none}
-    #chatBtn{bottom:16px;right:16px}
+    .norm-grid{grid-template-columns:1fr}
+    #chatBtn{bottom:14px;right:14px;width:48px;height:48px;font-size:20px}
+    .matrix-row{grid-template-columns:1fr}
+    .matrix-label{border-right:none;border-bottom:1px solid var(--line)}
   }
 
   /* GUÍA / EJEMPLO */
