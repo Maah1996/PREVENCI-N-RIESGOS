@@ -904,6 +904,8 @@ function togglePw(id,btn){
 // ==================== BOOT ====================
 async function boot(){
   render();
+  // Autenticarse anónimamente primero para que Firestore permita el acceso
+  try{ await fbAuth.signInAnonymously(); }catch(e){ console.warn('anon auth error:',e); }
   await initAuth();
   const sess = getSession();
   if(sess){
