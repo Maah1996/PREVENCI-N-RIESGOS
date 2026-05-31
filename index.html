@@ -415,11 +415,11 @@
       <h1>Checklist previo al Plan&nbsp;de&nbsp;Emergencia</h1>
       <p class="sub">Lista de verificación, paso a paso, de todo lo que hay que hacer en una empresa <b>antes</b> de redactar su plan de emergencia.</p>
       <div class="norms">
-        <a href="#normativa" onclick="document.getElementById('normativa').scrollIntoView({behavior:'smooth'});return false;"
-           style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:6px 16px;color:#eef2ec;text-decoration:none;font-size:13px;font-weight:600;transition:background .2s"
+        <button onclick="showNormativa()"
+           style="display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:6px 16px;color:#eef2ec;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s"
            onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">
           📚 Normativa de Referencia →
-        </a>
+        </button>
       </div>
     </div>
     <div class="ring">
@@ -436,8 +436,13 @@
 <div class="wrap">
 
   <!-- Normativa de Referencia -->
-  <section class="norm-section reveal" id="normativa" style="animation-delay:.04s">
-    <h2>📚 Normativa de Referencia</h2>
+  <section class="norm-section" id="normativa" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+      <h2 style="margin:0">📚 Normativa de Referencia</h2>
+      <button onclick="showChecklist()" style="display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:#fff;border:none;border-radius:9px;padding:9px 16px;font:inherit;font-size:13px;font-weight:600;cursor:pointer">
+        ← Regresar al Checklist
+      </button>
+    </div>
     <div class="norm-grid">
       <div class="norm-card" onclick="openPdf('pdfs/DS594.pdf','DS N° 594 — Condiciones Sanitarias en el Trabajo')">
         <div class="nc-icon">⚖️</div>
@@ -484,6 +489,7 @@
     </div>
   </section>
 
+  <div id="mainContent">
   <!-- Datos de la empresa -->
   <section class="section reveal" style="animation-delay:.05s">
     <div class="panel-head"><h2>Datos de la empresa</h2></div>
@@ -511,6 +517,8 @@
     <div class="panel-head"><h2>Fases del trabajo</h2><span class="pcount" id="globalCount">0 / 32 tareas</span></div>
     <div id="phases"></div>
   </section>
+
+  </div><!-- /mainContent -->
 
   <footer class="note-foot">
     Herramienta de apoyo basada en la normativa chilena vigente · DS N° 594/1999 (MINSAL), DS N° 44/2023 (Min. del Trabajo, vigente desde 01-02-2025), Ley N° 16.744 y NCh 1411.<br>
@@ -1033,6 +1041,18 @@ function togglePw(id,btn){
   const show=inp.type==='password';
   inp.type=show?'text':'password';
   btn.textContent=show?'🙈':'👁';
+}
+
+// ==================== VISTAS ====================
+function showNormativa(){
+  document.getElementById('mainContent').style.display='none';
+  document.getElementById('normativa').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showChecklist(){
+  document.getElementById('normativa').style.display='none';
+  document.getElementById('mainContent').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // ==================== PDF VIEWER ====================
