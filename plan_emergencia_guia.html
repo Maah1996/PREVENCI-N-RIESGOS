@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía para Redactar el Plan de Emergencia · Normativa Chilena</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600&family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#11201c;--ink-2:#1d3530;--paper:#f6f4ed;--card:#ffffff;
+    --line:#e3e0d4;--green:#2f8f5b;--green-d:#1f6b42;--green-light:#edfbf2;
+    --amber:#e0962f;--amber-soft:#fbf0db;--text:#243430;--muted:#6c7b75;
+    --blue:#2563a8;--blue-soft:#eef4ff;
+    --shadow:0 1px 2px rgba(17,32,28,.06),0 8px 24px rgba(17,32,28,.06);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Hanken Grotesk',-apple-system,'Segoe UI',sans-serif;background:
+    radial-gradient(1200px 500px at 80% -10%,#16332b 0%,transparent 60%),var(--paper);
+    color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:60px}
+  .wrap{max-width:960px;margin:0 auto;padding:0 18px}
+
+  /* HERO */
+  .hero{background:linear-gradient(150deg,var(--ink) 0%,var(--ink-2) 100%);color:#eef2ec;
+    padding:32px 0 28px;border-bottom:4px solid var(--green);position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;
+    background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0 12px,transparent 12px 28px);
+    pointer-events:none}
+  .badge{display:inline-flex;align-items:center;gap:7px;font-size:12px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:10px}
+  .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px rgba(224,150,47,.18)}
+  .hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(24px,4vw,38px);line-height:1.1;letter-spacing:-.01em}
+  .hero p.sub{color:#b9c8c0;margin-top:8px;font-size:15px;max-width:52ch}
+  .hero .norms{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+  .hero .norms span{font-size:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+    padding:4px 10px;border-radius:999px;color:#d6e2da}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--amber);
+    text-decoration:none;font-weight:600;margin-bottom:16px;opacity:.85}
+  .back-btn:hover{opacity:1}
+
+  /* INTRO BOX */
+  .intro{margin-top:24px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 24px;box-shadow:var(--shadow)}
+  .intro p{font-size:14.5px;color:var(--text);line-height:1.65}
+  .intro .tip{margin-top:12px;background:var(--amber-soft);border-left:3px solid var(--amber);
+    border-radius:0 8px 8px 0;padding:10px 13px;font-size:13px;color:#7a5a1d}
+
+  /* SECTION CARDS */
+  .sec-num{margin-top:28px}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:10px}
+  .num-badge{flex-shrink:0;width:42px;height:42px;border-radius:11px;background:var(--ink);
+    color:#fff;font-family:'Fraunces',serif;font-weight:600;font-size:19px;
+    display:grid;place-items:center}
+  .sec-title{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--ink);line-height:1.2}
+  .sec-sub{font-size:13px;color:var(--muted);margin-top:2px}
+
+  .matrix{background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden}
+  .matrix-row{display:grid;grid-template-columns:180px 1fr;border-bottom:1px solid var(--line)}
+  .matrix-row:last-child{border-bottom:none}
+  .matrix-label{background:#f9f8f4;padding:16px 18px;font-size:11.5px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;color:var(--muted);border-right:1px solid var(--line);
+    display:flex;align-items:flex-start}
+  .matrix-val{padding:16px 20px;font-size:14px;color:var(--text);line-height:1.6}
+  .matrix-val ul{list-style:none;padding:0}
+  .matrix-val ul li{padding:3px 0 3px 18px;position:relative}
+  .matrix-val ul li::before{content:"›";position:absolute;left:0;color:var(--green);font-weight:700}
+  .matrix-val .example{background:var(--blue-soft);border-left:3px solid var(--blue);
+    border-radius:0 8px 8px 0;padding:10px 13px;font-size:13px;color:#1e3a5f;margin-top:10px;line-height:1.55}
+  .matrix-val .ref-tag{display:inline-block;margin-top:10px;font-size:11.5px;
+    color:#4a6a8a;font-style:italic}
+
+  /* CONTENT FULL ROW */
+  .matrix-full{padding:16px 20px;font-size:14px;color:var(--text);line-height:1.6;
+    border-bottom:1px solid var(--line)}
+  .matrix-full:last-child{border-bottom:none}
+
+  /* PHONE TABLE */
+  .phone-table{width:100%;border-collapse:collapse;font-size:14px}
+  .phone-table th{background:#f9f8f4;padding:9px 14px;text-align:left;font-size:11.5px;
+    font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+    border-bottom:1px solid var(--line)}
+  .phone-table td{padding:10px 14px;border-bottom:1px dashed var(--line);vertical-align:top}
+  .phone-table tr:last-child td{border-bottom:none}
+  .phone-num{font-family:monospace;font-size:16px;font-weight:700;color:var(--green-d)}
+
+  /* RECORD TABLE */
+  .rec-table{width:100%;border-collapse:collapse;font-size:13px}
+  .rec-table th{background:#f9f8f4;padding:9px 12px;text-align:left;font-size:11px;
+    font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);
+    border-bottom:1px solid var(--line)}
+  .rec-table td{padding:9px 12px;border-bottom:1px dashed var(--line);color:#888}
+  .rec-table tr:last-child td{border-bottom:none}
+
+  /* NORM STRIP */
+  .norm{background:var(--amber-soft);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;
+    padding:9px 13px;font-size:12.5px;color:#7a5a1d;margin-top:10px}
+  .norm b{color:#6b4e16}
+
+  /* FOOTER */
+  footer{margin-top:36px;text-align:center;color:var(--muted);font-size:12.5px;line-height:1.7}
+
+  @media(max-width:600px){
+    .matrix-row{grid-template-columns:1fr}
+    .matrix-label{border-right:none;border-bottom:1px solid var(--line);padding:10px 16px}
+    .sec-title{font-size:17px}
+  }
+  @media print{
+    body{background:#fff;padding:0}
+    .hero{background:#fff;color:#000;border-bottom:2px solid #000}
+    .hero::before,.back-btn{display:none}
+    .hero h1,.badge,.hero .norms span,.num-badge{color:#000!important;background:none!important}
+    .num-badge{border:1px solid #000}
+    .matrix{box-shadow:none;break-inside:avoid}
+    .matrix-label{background:#f0f0f0}
+    .example{background:#f0f5ff!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <a class="back-btn" href="index.html">← Volver al Checklist</a>
+    <div class="badge"><span class="dot"></span>Plan de Emergencia · Guía de redacción</div>
+    <h1>Cómo redactar el Plan de Emergencia</h1>
+    <p class="sub">Estructura mínima exigida por la normativa chilena vigente. Aplicable a cualquier rubro o tamaño de empresa.</p>
+    <div class="norms">
+      <span>DS N° 594</span><span>DS N° 44</span><span>Ley N° 16.744</span><span>NCh 1411</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="intro">
+    <p>El Plan de Emergencia es el <strong>documento formal</strong> que describe cómo actuará la empresa ante una situación de riesgo. Debe ser <strong>específico, práctico y comprensible</strong> para todos los trabajadores, independientemente de su nivel de instrucción. No es un documento académico: es un manual de acción.</p>
+    <div class="tip"><strong>Regla de oro:</strong> Si un trabajador nuevo puede leerlo y saber exactamente qué hacer en una emergencia, está bien redactado. Si requiere interpretación, hay que simplificarlo.</div>
+  </div>
+
+  <!-- SECCIÓN 1 -->
+  <div class="sec-num">
+    <div class="sec-head">
+      <div class="num-badge">1</div>
+      <div><div class="sec-title">Descripción del establecimiento y actividad</div>
+      <div class="sec-sub">Identifica quién es la empresa, dónde está y qué hace</div></div>
+    </div>
+    <div class="matrix">
+      <div class="matrix-row">
+        <div class="matrix-label">Qué debe contener</div>
+        <div class="matrix-val"><ul>
+          <li>Razón social, RUT y rubro de la empresa</li>
+          <li>Dirección completa del establecimiento</li>
+          <li>Número total de trabajadores y distribución por turno</li>
+          <li>Descripción breve del proceso productivo o servicio</li>
+          <li>Horarios de funcionamiento</li>
+          <li>Nombre y cargo del responsable del plan</li>
+        </ul></div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Párrafo modelo</div>
+        <div class="matrix-val">
+          <div class="example">«<strong>[Nombre de la empresa]</strong>, RUT <strong>[XX.XXX.XXX-X]</strong>, con domicilio en <strong>[dirección completa]</strong>, se dedica a <strong>[descripción del rubro]</strong>. Cuenta con <strong>[N°]</strong> trabajadores distribuidos en <strong>[N°]</strong> turnos: turno día (<strong>[horario]</strong>, <strong>[N°]</strong> personas) y turno noche (<strong>[horario]</strong>, <strong>[N°]</strong> personas). El responsable del presente plan es <strong>[nombre y cargo]</strong>.»</div>
+          <span class="ref-tag">Ref.: DS 44 Art. 4 · DS 594 Art. 57</span>
+        </div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Para cualquier rubro</div>
+        <div class="matrix-val">Esta sección es idéntica para todos los rubros. Solo cambian los datos de la empresa y la descripción de la actividad (comercio, producción, servicio, salud, educación, etc.).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2 -->
+  <div class="sec-num">
+    <div class="sec-head">
+      <div class="num-badge">2</div>
+      <div><div class="sec-title">Análisis de riesgos (MIPER)</div>
+      <div class="sec-sub">Identifica qué puede salir mal y qué tan grave sería</div></div>
+    </div>
+    <div class="matrix">
+      <div class="matrix-row">
+        <div class="matrix-label">Qué debe contener</div>
+        <div class="matrix-val"><ul>
+          <li>Listado de peligros por área (incendio, sismo, eléctrico, químico, caída, etc.)</li>
+          <li>Evaluación de probabilidad y consecuencia de cada peligro</li>
+          <li>Nivel de riesgo resultante (alto / medio / bajo)</li>
+          <li>Medidas de control ya existentes y propuestas</li>
+          <li>Responsable y plazo de cada medida</li>
+          <li>Mapa de riesgos de las instalaciones</li>
+        </ul></div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Estructura de la tabla</div>
+        <div class="matrix-val">
+          <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <tr style="background:#f9f8f4">
+              <th style="padding:7px 10px;border:1px solid var(--line);text-align:left">Área</th>
+              <th style="padding:7px 10px;border:1px solid var(--line);text-align:left">Peligro</th>
+              <th style="padding:7px 10px;border:1px solid var(--line);text-align:left">Probab.</th>
+              <th style="padding:7px 10px;border:1px solid var(--line);text-align:left">Consecuencia</th>
+              <th style="padding:7px 10px;border:1px solid var(--line);text-align:left">Nivel</th>
+              <th style="padding:7px 10px;border:1px solid var(--line);text-align:left">Control</th>
+            </tr>
+            <tr>
+              <td style="padding:7px 10px;border:1px solid var(--line);color:#888">Bodega</td>
+              <td style="padding:7px 10px;border:1px solid var(--line);color:#888">Incendio</td>
+              <td style="padding:7px 10px;border:1px solid var(--line);color:#888">Media</td>
+              <td style="padding:7px 10px;border:1px solid var(--line);color:#888">Grave</td>
+              <td style="padding:7px 10px;border:1px solid var(--line);font-weight:700;color:#c0392b">ALTO</td>
+              <td style="padding:7px 10px;border:1px solid var(--line);color:#888">Extintor CO₂ + señalética</td>
+            </tr>
+            <tr style="background:#fafaf8">
+              <td style="padding:7px 10px;border:1px solid var(--line);color:#888">Oficinas</td>
+              <td style="padding:7px 10px;border:1px solid var(--line);color:#888">Sismo</td>
+              <td style="padding:7px 10px;border:1px solid var(--line);color:#888">Alta</td>
+              <td style="padding:7px 10px;border:1px solid var(--line);color:#888">Leve</td>
+              <td style="padding:7px 10px;border:1px solid var(--line);font-weight:700;color:var(--amber)">MEDIO</td>
+              <td style="padding:7px 10px;border:1px solid var(--line);color:#888">Anclar estanterías</td>
+            </tr>
+          </table>
+          <span class="ref-tag">Ref.: DS 44 Art. 7 · NCh 1411</span>
+        </div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Párrafo modelo</div>
+        <div class="matrix-val">
+          <div class="example">«El análisis de riesgos fue realizado el <strong>[fecha]</strong> mediante inspección de las instalaciones y entrevista al personal. Se identificaron <strong>[N°]</strong> peligros distribuidos en <strong>[N°]</strong> áreas. Los riesgos de nivel alto requieren intervención inmediata y serán corregidos antes de la entrada en vigencia del presente plan. El mapa de riesgos actualizado se adjunta como Anexo N° 1.»</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 3 -->
+  <div class="sec-num">
+    <div class="sec-head">
+      <div class="num-badge">3</div>
+      <div><div class="sec-title">Organigrama de emergencia</div>
+      <div class="sec-sub">Define quién manda, quién hace qué y quién reemplaza a quién</div></div>
+    </div>
+    <div class="matrix">
+      <div class="matrix-row">
+        <div class="matrix-label">Roles mínimos</div>
+        <div class="matrix-val"><ul>
+          <li><strong>Jefe de Emergencia:</strong> toma decisiones, activa el plan, coordina con Bomberos y SAMU</li>
+          <li><strong>Encargado de Evacuación:</strong> guía al personal hacia la zona de seguridad, verifica que no quede nadie</li>
+          <li><strong>Encargado de Primeros Auxilios:</strong> atiende lesionados mientras llega la ayuda profesional</li>
+          <li><strong>Encargado de Extinción:</strong> opera los extintores en caso de amago de incendio</li>
+          <li><strong>Reemplazantes:</strong> un suplente por cada rol para cubrir ausencias y todos los turnos</li>
+        </ul></div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Párrafo modelo</div>
+        <div class="matrix-val">
+          <div class="example">«El organigrama de emergencia de <strong>[empresa]</strong> está compuesto por los siguientes roles: <strong>Jefe de Emergencia:</strong> <strong>[nombre/cargo]</strong> — <strong>Suplente:</strong> <strong>[nombre/cargo]</strong>. <strong>Encargado de Evacuación:</strong> <strong>[nombre/cargo]</strong>. <strong>Encargado de Primeros Auxilios:</strong> <strong>[nombre/cargo]</strong>, con certificación vigente en primeros auxilios. <strong>Encargado de Extinción:</strong> <strong>[nombre/cargo]</strong>, capacitado en uso de extintores. Los encargados serán reconocibles por chaleco o brazalete de color <strong>[color]</strong> durante simulacros y emergencias.»</div>
+          <span class="ref-tag">Ref.: DS 44 Art. 10 · DS 594 Art. 48</span>
+        </div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Para cualquier rubro</div>
+        <div class="matrix-val">En empresas pequeñas (menos de 10 personas) una misma persona puede asumir más de un rol. Lo importante es que cada función esté asignada a alguien con nombre y apellido, no a un cargo genérico.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 4 -->
+  <div class="sec-num">
+    <div class="sec-head">
+      <div class="num-badge">4</div>
+      <div><div class="sec-title">Procedimientos por tipo de emergencia</div>
+      <div class="sec-sub">Qué hacer paso a paso en cada escenario de riesgo</div></div>
+    </div>
+    <div class="matrix">
+      <div class="matrix-row">
+        <div class="matrix-label">Emergencias mínimas a cubrir</div>
+        <div class="matrix-val"><ul>
+          <li><strong>Incendio / amago de incendio</strong></li>
+          <li><strong>Sismo</strong></li>
+          <li><strong>Evacuación general</strong></li>
+          <li><strong>Accidente laboral / persona lesionada</strong></li>
+          <li>Según el rubro: fuga de gas, derrame químico, corte de suministro eléctrico, etc.</li>
+        </ul></div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Estructura de cada procedimiento</div>
+        <div class="matrix-val"><ul>
+          <li><strong>Señal de alerta:</strong> ¿Cómo se activa? (alarma, voz, sirena)</li>
+          <li><strong>Acción inmediata:</strong> qué hace cada trabajador en los primeros 30 segundos</li>
+          <li><strong>Acciones por rol:</strong> pasos específicos del Jefe de Emergencia, Evacuación, Extinción y Primeros Auxilios</li>
+          <li><strong>Ruta de evacuación:</strong> por dónde salir y adónde ir</li>
+          <li><strong>Punto de reunión:</strong> zona de seguridad y conteo de personas</li>
+          <li><strong>Comunicación:</strong> quién llama a Bomberos, SAMU o Carabineros</li>
+          <li><strong>Regreso a actividades:</strong> quién autoriza el retorno y cuándo</li>
+        </ul></div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Modelo — Incendio</div>
+        <div class="matrix-val">
+          <div class="example">
+            <strong>Al detectar humo o fuego:</strong><br>
+            <strong>1.</strong> Quien detecta el fuego da la voz de alerta: <em>«¡Fuego en [área]!»</em> o activa la alarma.<br>
+            <strong>2.</strong> El Encargado de Extinción evalúa: si es un amago controlable (menos de 1 minuto de extinción), usa el extintor más cercano. Si no es controlable, NO interviene y evacua.<br>
+            <strong>3.</strong> El Jefe de Emergencia llama a Bomberos: <strong>132</strong>. Informa dirección, tipo de incendio y si hay personas atrapadas.<br>
+            <strong>4.</strong> El Encargado de Evacuación guía al personal hacia la zona de seguridad por las rutas marcadas. Verifica que no quede nadie.<br>
+            <strong>5.</strong> En la zona de seguridad: conteo de personas. Informar al Jefe de Emergencia.<br>
+            <strong>6.</strong> Nadie regresa hasta que Bomberos autorice el ingreso.
+          </div>
+          <span class="ref-tag">Ref.: DS 594 Art. 37, 44, 45 · DS 44 Art. 11</span>
+        </div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Modelo — Sismo</div>
+        <div class="matrix-val">
+          <div class="example">
+            <strong>Al comenzar el movimiento:</strong><br>
+            <strong>1.</strong> Mantener la calma. <strong>NO correr ni salir</strong> durante el movimiento.<br>
+            <strong>2.</strong> Alejarse de ventanas, estanterías y objetos que puedan caer. Ubicarse bajo marcos de puertas sólidos o bajo escritorios resistentes (posición de protección).<br>
+            <strong>3.</strong> Al cesar el movimiento: el Jefe de Emergencia evalúa daños. Si hay riesgo de réplica fuerte, colapso o fuga de gas: evacuar.<br>
+            <strong>4.</strong> Evacuar por las rutas señalizadas hacia la zona de seguridad. No usar ascensores.<br>
+            <strong>5.</strong> En zona de seguridad: conteo de personas. Revisar si hay lesionados.<br>
+            <strong>6.</strong> El Jefe de Emergencia decide el regreso previa inspección visual del edificio.
+          </div>
+          <span class="ref-tag">Ref.: DS 594 Art. 37 · DS 44 Art. 12 · SENAPRED</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 5 -->
+  <div class="sec-num">
+    <div class="sec-head">
+      <div class="num-badge">5</div>
+      <div><div class="sec-title">Plano de evacuación actualizado</div>
+      <div class="sec-sub">La representación gráfica del plan: dónde estoy y por dónde salgo</div></div>
+    </div>
+    <div class="matrix">
+      <div class="matrix-row">
+        <div class="matrix-label">Qué debe incluir</div>
+        <div class="matrix-val"><ul>
+          <li>Croquis de las instalaciones (no requiere escala exacta, sí proporciones)</li>
+          <li>Indicación <strong>«Usted está aquí»</strong> en el lugar donde se ubica el plano</li>
+          <li>Flechas de evacuación en verde indicando la ruta hacia la salida</li>
+          <li>Ubicación de extintores, luces de emergencia y botiquín</li>
+          <li>Zona de seguridad exterior claramente marcada</li>
+          <li>Salidas de emergencia diferenciadas de puertas normales</li>
+          <li>Teléfonos de emergencia en la esquina inferior del plano</li>
+        </ul></div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Dónde publicarlo</div>
+        <div class="matrix-val"><ul>
+          <li>Un plano por cada área o piso del establecimiento</li>
+          <li>Plastificado o en acrílico, fijado a la pared a la altura de los ojos (150–180 cm)</li>
+          <li>En lugares de alta circulación: entrada, pasillos principales, comedores, baños</li>
+          <li>Actualizar cada vez que cambien las instalaciones o las vías de evacuación</li>
+        </ul>
+        <div class="example">Un plano desactualizado es tan peligroso como no tener ninguno. Si cambia la distribución del espacio, el plano debe actualizarse antes de que los trabajadores regresen a sus funciones.</div>
+        <span class="ref-tag">Ref.: DS 594 Art. 37 · NCh 1411 · DS 44 Art. 13</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 6 -->
+  <div class="sec-num">
+    <div class="sec-head">
+      <div class="num-badge">6</div>
+      <div><div class="sec-title">Teléfonos de emergencia</div>
+      <div class="sec-sub">Números que todo trabajador debe conocer de memoria o tener a mano</div></div>
+    </div>
+    <div class="matrix">
+      <div class="matrix-row">
+        <div class="matrix-label">Números obligatorios</div>
+        <div class="matrix-val">
+          <table class="phone-table">
+            <tr><th>Servicio</th><th>Número</th><th>Cuándo llamar</th></tr>
+            <tr><td>Bomberos</td><td><span class="phone-num">132</span></td><td>Incendio, explosión, rescate de personas atrapadas, fuga de gas</td></tr>
+            <tr><td>SAMU</td><td><span class="phone-num">131</span></td><td>Accidentes con lesionados, emergencias médicas, pérdida de conocimiento</td></tr>
+            <tr><td>Carabineros</td><td><span class="phone-num">133</span></td><td>Emergencias de seguridad pública, robos, disturbios</td></tr>
+            <tr><td>PDI</td><td><span class="phone-num">134</span></td><td>Delitos, accidentes con fallecidos</td></tr>
+            <tr><td>SENAPRED / ONEMI</td><td><span class="phone-num">1407</span></td><td>Catástrofes naturales, tsunamis, aluviones</td></tr>
+            <tr><td>Fono Salud (MINSAL)</td><td><span class="phone-num">600 360 7777</span></td><td>Consultas de salud, intoxicaciones</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Números internos a agregar</div>
+        <div class="matrix-val"><ul>
+          <li><strong>Jefe de Emergencia:</strong> [nombre] — Cel. [número]</li>
+          <li><strong>Encargado de turno nocturno:</strong> [nombre] — Cel. [número]</li>
+          <li><strong>Mutualidad (ACHS / Mutual / IST):</strong> [número sucursal más cercana]</li>
+          <li><strong>Hospital o clínica más cercana:</strong> [nombre] — [dirección] — [teléfono]</li>
+          <li><strong>Gasera o empresa de servicios básicos:</strong> [nombre] — [número]</li>
+        </ul>
+        <span class="ref-tag">Ref.: DS 44 Art. 13 · Ley 16.744 Art. 66</span>
+        </div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Dónde publicarlos</div>
+        <div class="matrix-val">En cada plano de evacuación (esquina inferior), en el botiquín, junto a los teléfonos fijos del establecimiento y en la sala de reuniones. Formato: letra grande, fondo amarillo o blanco, plastificado.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 7 -->
+  <div class="sec-num">
+    <div class="sec-head">
+      <div class="num-badge">7</div>
+      <div><div class="sec-title">Registro de capacitaciones y simulacros</div>
+      <div class="sec-sub">La evidencia documental de que el plan se aplica y se practica</div></div>
+    </div>
+    <div class="matrix">
+      <div class="matrix-row">
+        <div class="matrix-label">Por qué es obligatorio</div>
+        <div class="matrix-val">El DS 44 Art. 14 exige que las capacitaciones y simulacros queden <strong>registrados por escrito</strong>. Sin registro, para la Inspección del Trabajo o la mutualidad, la actividad no ocurrió. El registro es la prueba legal de cumplimiento.</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Registro de capacitación</div>
+        <div class="matrix-val">
+          <table class="rec-table">
+            <tr><th>Campo</th><th>Ejemplo</th></tr>
+            <tr><td>Fecha</td><td>15/07/2025</td></tr>
+            <tr><td>Tema</td><td>Uso de extintores y tipos de fuego</td></tr>
+            <tr><td>Relator</td><td>Prevencionista / ACHS / Instructor</td></tr>
+            <tr><td>Duración</td><td>2 horas</td></tr>
+            <tr><td>N° asistentes</td><td>18 trabajadores</td></tr>
+            <tr><td>Lista de asistencia</td><td>Firmada por cada trabajador</td></tr>
+            <tr><td>Evaluación</td><td>Prueba escrita / práctica</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Registro de simulacro</div>
+        <div class="matrix-val">
+          <table class="rec-table">
+            <tr><th>Campo</th><th>Ejemplo</th></tr>
+            <tr><td>Fecha y hora</td><td>15/08/2025 — 10:30 hrs</td></tr>
+            <tr><td>Tipo de emergencia simulada</td><td>Incendio en bodega sur</td></tr>
+            <tr><td>Duración total</td><td>8 minutos desde alarma hasta conteo completo</td></tr>
+            <tr><td>N° participantes</td><td>22 (turno día completo)</td></tr>
+            <tr><td>Observaciones</td><td>Puerta de emergencia norte bloqueada — corregir en 3 días</td></tr>
+            <tr><td>Evaluación</td><td>Tiempo de evacuación: 4,5 min (meta: menos de 5 min) ✓</td></tr>
+            <tr><td>Firma responsable</td><td>Jefe de Emergencia + testigo</td></tr>
+          </table>
+          <span class="ref-tag">Ref.: DS 44 Art. 14 · DS 594 Art. 57</span>
+        </div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-label">Párrafo modelo</div>
+        <div class="matrix-val">
+          <div class="example">«El presente plan contempla la realización de <strong>[N°]</strong> capacitaciones anuales y <strong>un simulacro de evacuación por año</strong>, conforme lo exige el DS N° 44 Art. 14. Cada actividad quedará registrada en el formulario correspondiente (Anexo N° 2 y Anexo N° 3), con firma de los participantes y del responsable del plan. Los registros se conservarán por un mínimo de <strong>5 años</strong> y estarán disponibles para fiscalización de la Inspección del Trabajo y del organismo administrador.»</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NORM GENERAL -->
+  <div style="margin-top:28px">
+    <div class="norm"><b>Normativa base del Plan de Emergencia:</b> DS N° 594/1999 (MINSAL) Art. 37, 44, 45, 47, 48 y 57 · DS N° 44/2023 (Min. del Trabajo, vigente desde 01-02-2025) Art. 4, 7, 10, 11, 12, 13 y 14 · Ley N° 16.744 Art. 66, 67 y 68 · NCh 1411 (señalética de seguridad) · NCh 2111 (alumbrado de emergencia).</div>
+  </div>
+
+  <footer>
+    Guía de apoyo basada en normativa chilena vigente · No reemplaza la asesoría de un experto en prevención de riesgos.<br>
+    <a href="index.html" style="color:var(--green-d)">← Volver al Checklist</a>
+  </footer>
+
+</div>
+</body>
+</html>
