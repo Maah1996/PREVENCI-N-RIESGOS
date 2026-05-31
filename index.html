@@ -776,7 +776,9 @@ function renderUserList(){
       </div>
       <div class="edit-form" id="ef-${u.id}">
         <div class="field"><label>Nombre completo</label><input type="text" id="ef-name-${u.id}" value="${u.name}"></div>
-        <div class="field"><label>Contraseña nueva</label><div class="pw-wrap"><input type="password" id="ef-pass-${u.id}" placeholder="Dejar en blanco para no cambiar"><button type="button" class="pw-eye" onclick="togglePw('ef-pass-${u.id}',this)" tabindex="-1">👁</button></div></div>
+        <div class="field"><label>Usuario</label><input type="text" id="ef-user-${u.id}" value="${u.username}"${u.role==='admin'?' readonly style="background:#f0f0ee;color:#888"':''}></div>
+        <div class="field"><label>Contraseña actual</label><div class="pw-wrap"><input type="text" id="ef-curpass-${u.id}" value="${u.password}" readonly style="background:#f0f0ee;color:#555"><button type="button" class="pw-eye" onclick="togglePwField('ef-curpass-${u.id}',this)" tabindex="-1">👁</button></div></div>
+        <div class="field"><label>Nueva contraseña <span style="font-weight:400;text-transform:none;letter-spacing:0">(dejar en blanco para no cambiar)</span></label><div class="pw-wrap"><input type="password" id="ef-pass-${u.id}" placeholder="Nueva contraseña"><button type="button" class="pw-eye" onclick="togglePw('ef-pass-${u.id}',this)" tabindex="-1">👁</button></div></div>
         <div class="ef-error" id="ef-err-${u.id}"></div>
         <div class="ef-actions">
           <button class="btn-save" onclick="saveEditUser('${u.id}')">Guardar cambios</button>
@@ -791,19 +793,32 @@ function toggleEditForm(uid){
 }
 
 function saveEditUser(uid){
-  const name = document.getElementById('ef-name-'+uid).value.trim();
-  const pass = document.getElementById('ef-pass-'+uid).value;
-  const err  = document.getElementById('ef-err-'+uid);
+  const name  = document.getElementById('ef-name-'+uid).value.trim();
+  const uname = document.getElementById('ef-user-'+uid).value.trim().toLowerCase();
+  const pass  = document.getElementById('ef-pass-'+uid).value;
+  const err   = document.getElementById('ef-err-'+uid);
   if(!name){ err.textContent='El nombre no puede estar vacío.'; return; }
-  if(pass && pass.length<6){ err.textContent='La contraseña debe tener al menos 6 caracteres.'; return; }
+  if(!uname){ err.textContent='El usuario no puede estar vacío.'; return; }
+  if(pass && pass.length<6){ err.textContent='La nueva contraseña debe tener al menos 6 caracteres.'; return; }
   const a = getAuthData();
+  const dup = a.users.find(u=>u.username===uname && u.id!==uid);
+  if(dup){ err.textContent='Ese nombre de usuario ya está en uso.'; return; }
   const u = a.users.find(u=>u.id===uid);
   if(!u) return;
   u.name = name;
+  if(u.role!=='admin') u.username = uname;
   if(pass) u.password = pass;
   saveAuthData(a);
   err.textContent='';
   renderUserList();
+}
+
+function togglePwField(id, btn){
+  const inp = document.getElementById(id);
+  const show = inp.style.webkitTextSecurity !== 'disc' && inp.type !== 'password';
+  inp.style.webkitTextSecurity = show ? 'disc' : 'none';
+  inp.style.fontFamily = show ? '' : 'monospace';
+  btn.textContent = show ? '👁' : '🙈';
 }
 
 function togglePerm(uid,perm,val){
