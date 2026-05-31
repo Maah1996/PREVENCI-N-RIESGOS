@@ -144,18 +144,33 @@
     .hero .wrap{justify-content:flex-start}
   }
 
+  /* GUÍA / EJEMPLO */
+  .guide-toggle{margin-top:5px;font-size:12px;color:#2563a8;background:none;border:none;cursor:pointer;font-weight:600;padding:0;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
+  .guide-toggle:hover{text-decoration:underline}
+  .guide-box{display:none;margin-top:8px;background:#eef4ff;border-left:3px solid #2563a8;border-radius:0 8px 8px 0;padding:10px 13px;font-size:12.5px;color:#1e3a5f;line-height:1.55}
+  .guide-box.open{display:block}
+  .guide-box b{color:#1a3050}
+  .guide-box .ref{margin-top:6px;font-size:11.5px;color:#4a6a8a;font-style:italic}
+  .resp-label{margin-top:10px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  textarea.resp{width:100%;margin-top:4px;border:1px solid var(--line);border-radius:8px;background:#fcfbf7;
+    padding:9px 11px;font:inherit;font-size:13.5px;resize:vertical;min-height:60px;color:var(--text)}
+  textarea.resp:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(47,143,91,.13)}
+  textarea.resp.filled{border-color:#2563a8;background:#f5f9ff}
+
   /* PRINT */
   @media print{
     body{background:#fff;padding:0}
     .hero{background:#fff;color:#000;border-bottom:2px solid #000}
-    .hero::before,.ring,.toolbar,.chev,.note-toggle{display:none!important}
+    .hero::before,.ring,.toolbar,.chev,.note-toggle,.guide-toggle{display:none!important}
     .hero h1,.badge,.hero .norms span,.ptitle .t,.num{color:#000!important;background:none!important}
     .num{border:1px solid #000}
     .phase{break-inside:avoid}
     .phase:not([open]) .tasks,.phase:not([open]) .norm{display:block!important}
     details{open:true}
     .card{box-shadow:none;border:1px solid #999}
-    textarea.note{display:block!important;border:1px solid #ccc}
+    .guide-box{display:block!important;background:#f0f5ff;border:1px solid #aac;margin-bottom:4px}
+    textarea.resp{display:block!important;border:1px solid #ccc;min-height:70px}
+    .resp-label{display:block!important}
   }
 </style>
 </head>
@@ -224,63 +239,95 @@ const PHASES = [
   { t:"Preparación y coordinación inicial",
     norm:"<b>Ley N° 16.744</b> (obligaciones del empleador y rol del organismo administrador) · <b>DS N° 44</b> (gestión preventiva planificada).",
     tasks:[
-      "Definir el objetivo del trabajo y a quién va dirigido (todo el personal y todos los turnos).",
-      "Obtener la autorización formal del empleador para inspeccionar las instalaciones y entrevistar al personal.",
-      "Reunir la documentación existente: plan de emergencia anterior, planos, reglamento interno y registros de mantención.",
-      "Identificar el organismo administrador (ACHS, IST o Mutual de Seguridad) y solicitar asistencia técnica.",
-      "Elaborar un cronograma de actividades (visitas, capacitaciones y simulacro)."
+      { lbl:"Definir el objetivo del trabajo y a quién va dirigido (todo el personal y todos los turnos).",
+        ej:"Redacte un documento breve que indique: <b>«El objetivo de este diagnóstico es recopilar la información necesaria para elaborar el Plan de Emergencia de [Empresa], el cual aplica a todos los trabajadores, contratistas y visitas, en todos los turnos (diurno, vespertino y nocturno).»</b> El documento debe llevar firma del responsable y del empleador.<br><span class='ref'>Ref.: Ley 16.744 Art. 67 · DS 44 Art. 4</span>" },
+      { lbl:"Obtener la autorización formal del empleador para inspeccionar las instalaciones y entrevistar al personal.",
+        ej:"Solicite una carta o correo firmado por el gerente o dueño que indique: <b>«Autorizo a [nombre del prevencionista] para realizar inspección de las instalaciones el día [fecha] con el fin de elaborar el plan de emergencia.»</b> Sin este documento no se pueden inspeccionar zonas restringidas ni entrevistar trabajadores.<br><span class='ref'>Ref.: Ley 16.744 · DS 44 Art. 4</span>" },
+      { lbl:"Reunir la documentación existente: plan de emergencia anterior, planos, reglamento interno y registros de mantención.",
+        ej:"Solicite al empleador: <b>(a)</b> Plan de emergencia vigente o anterior, <b>(b)</b> planos de la planta o local, <b>(c)</b> Reglamento Interno de Orden, Higiene y Seguridad (RIOHS), <b>(d)</b> registros de mantención de extintores, luces de emergencia y equipos críticos. Si algún documento no existe, déjelo registrado como no conformidad.<br><span class='ref'>Ref.: DS 594 Art. 57 · DS 44 Art. 7</span>" },
+      { lbl:"Identificar el organismo administrador (ACHS, IST o Mutual de Seguridad) y solicitar asistencia técnica.",
+        ej:"Revise las liquidaciones de sueldo o consulte a RRHH para confirmar a qué mutualidad está adherida la empresa (ACHS, Mutual de Seguridad o IST). Luego comuníquese con la sucursal correspondiente y solicite una <b>«visita de asistencia técnica en prevención de riesgos»</b>, servicio gratuito para empresas afiliadas que incluye asesoría en planes de emergencia.<br><span class='ref'>Ref.: Ley 16.744 Art. 12 y 66</span>" },
+      { lbl:"Elaborar un cronograma de actividades (visitas, capacitaciones y simulacro).",
+        ej:"Elabore una tabla con fechas comprometidas, por ejemplo:<br><b>Visita 1 – Inspección física:</b> 10/06 · <b>Visita 2 – Entrevistas:</b> 17/06 · <b>Capacitación extintores:</b> 01/07 · <b>Capacitación evacuación:</b> 08/07 · <b>Simulacro:</b> 15/07 · <b>Entrega del plan:</b> 30/07. El DS 44 exige <b>al menos un simulacro al año</b> y que las actividades queden documentadas.<br><span class='ref'>Ref.: DS 44 Art. 14</span>" }
     ]},
   { t:"Reconocimiento de las instalaciones (visita técnica)",
     norm:"<b>DS N° 594, Art. 37</b>: vías de evacuación seguras, libres de obstáculos y señalizadas hacia una zona de seguridad.",
     tasks:[
-      "Recorrer todas las áreas: operación/producción, bodegas, oficinas, baños, accesos y patios.",
-      "Determinar la superficie y elaborar un croquis con salidas y pasillos.",
-      "Identificar las vías de evacuación y la(s) zona(s) de seguridad hacia el exterior.",
-      "Registrar con fotografías los puntos críticos (siempre con autorización).",
-      "Localizar extintores, luces de emergencia, botiquín y red húmeda/seca si existe.",
-      "Verificar que las vías estén libres de obstáculos y que las puertas de escape abran en sentido de evacuación."
+      { lbl:"Recorrer todas las áreas: operación/producción, bodegas, oficinas, baños, accesos y patios.",
+        ej:"Realice un recorrido físico completo con libreta de campo. Para cada área anote: nombre, superficie estimada, función, materiales almacenados y condiciones observadas. Ejemplo: <b>«Bodega norte – aprox. 120 m² – almacena thinner y pinturas – acceso por puerta lateral – sin señalética de peligro.»</b> No omita baños, salas de equipos ni pasillos secundarios.<br><span class='ref'>Ref.: DS 594 Art. 37 · DS 44 Art. 7</span>" },
+      { lbl:"Determinar la superficie y elaborar un croquis con salidas y pasillos.",
+        ej:"Mida o estime la superficie de cada área en m². Dibuje un croquis indicando: muros, puertas, ventanas, pasillos, escaleras y salidas al exterior. No requiere escala exacta, pero debe ser <b>claro y legible</b>. Si existen planos arquitectónicos, úselos como base y actualícelos. El croquis se incluirá en el plan de emergencia.<br><span class='ref'>Ref.: DS 594 Art. 37 · NCh 1411/1</span>" },
+      { lbl:"Identificar las vías de evacuación y la(s) zona(s) de seguridad hacia el exterior.",
+        ej:"Marque en el croquis con <b>flechas verdes</b> las vías de evacuación (pasillos y puertas de salida). Defina la <b>Zona de Seguridad exterior</b>: espacio abierto, alejado del edificio, donde se concentra el personal. Ejemplo: <b>«Zona de seguridad: estacionamiento frontal, mínimo 15 m del edificio, libre de obstáculos y vehículos.»</b> El DS 594 exige que las vías conduzcan directamente al exterior.<br><span class='ref'>Ref.: DS 594 Art. 37</span>" },
+      { lbl:"Registrar con fotografías los puntos críticos (siempre con autorización).",
+        ej:"Con autorización firmada del empleador, fotografíe: extintores y su ubicación, puertas de evacuación, señalética existente, tableros eléctricos, zonas de almacenamiento de materiales peligrosos y cualquier obstrucción detectada. <b>Etiquete cada foto</b> con el área, fecha y descripción breve. Las fotos se adjuntan al informe de diagnóstico.<br><span class='ref'>Ref.: DS 44 Art. 7</span>" },
+      { lbl:"Localizar extintores, luces de emergencia, botiquín y red húmeda/seca si existe.",
+        ej:"Complete una tabla de inventario. Ejemplo:<br><b>Extintor 1</b> – PQS 6 kg – Bodega norte – Vence 03/2026 – Mantención al día.<br><b>Luz emergencia 1</b> – Pasillo central – Funcional – Autonomía aprox. 90 min.<br><b>Botiquín</b> – Oficina administración – Responsable: [nombre].<br><b>Red húmeda/seca:</b> No existe. Este inventario es la base del diagnóstico de equipos.<br><span class='ref'>Ref.: DS 594 Art. 44, 45, 47</span>" },
+      { lbl:"Verificar que las vías estén libres de obstáculos y que las puertas de escape abran en sentido de evacuación.",
+        ej:"Camine físicamente por cada vía de evacuación y verifique: <b>¿Hay cajas, muebles u objetos bloqueando el pasillo?</b> ¿El ancho libre es mínimo 1,10 m (DS 594)? <b>¿La puerta de salida abre hacia afuera</b> (en el sentido de la evacuación)? Si una puerta abre hacia adentro o está bloqueada, es una <b>no conformidad grave</b> que debe corregirse antes de aprobar el plan.<br><span class='ref'>Ref.: DS 594 Art. 37</span>" }
     ]},
   { t:"Identificación de peligros y evaluación de riesgos (Matriz IPER)",
     norm:"<b>DS N° 44, Art. 7</b>: Matriz de Identificación de Peligros y Evaluación de Riesgos (MIPER) y mapa de riesgos.",
     tasks:[
-      "Identificar los peligros por área: incendio, eléctrico, mecánico, químico, fuga de gas, sismo, etc.",
-      "Identificar las zonas o tareas de mayor riesgo según la actividad de la empresa.",
-      "Evaluar cada riesgo según su probabilidad de ocurrencia y la gravedad de sus consecuencias.",
-      "Construir la Matriz de Identificación de Peligros y Evaluación de Riesgos (MIPER/IPER).",
-      "Elaborar el mapa de riesgos de las instalaciones.",
-      "Considerar los riesgos del entorno y del clima de la zona (viento, lluvia, nieve, sismicidad)."
+      { lbl:"Identificar los peligros por área: incendio, eléctrico, mecánico, químico, fuga de gas, sismo, etc.",
+        ej:"Para cada área liste los peligros presentes. Ejemplo:<br><b>Bodega:</b> incendio (materiales inflamables), eléctrico (instalación antigua), químico (solventes sin hoja de seguridad MSDS).<br><b>Cocina:</b> incendio (aceites, gas), quemaduras, fuga de gas.<br><b>Oficinas:</b> sismo (estantería sin anclar), eléctrico (multienchufes sobrecargados). Use la clasificación de peligros del DS 44 Anexo como referencia.<br><span class='ref'>Ref.: DS 44 Art. 7 · DS 594</span>" },
+      { lbl:"Identificar las zonas o tareas de mayor riesgo según la actividad de la empresa.",
+        ej:"Priorice las áreas donde se concentra mayor probabilidad de siniestro según el rubro. Ejemplos:<br><b>Restaurante:</b> cocina (incendio, gas, quemaduras) y bodega de gas (fuga, explosión).<br><b>Taller mecánico:</b> zona de soldadura (incendio, explosión) y foso de revisión (caída).<br><b>Oficinas:</b> sala de servidores (incendio eléctrico) y escaleras (caídas). Estas zonas deben tener controles reforzados en el plan.<br><span class='ref'>Ref.: DS 44 Art. 7</span>" },
+      { lbl:"Evaluar cada riesgo según su probabilidad de ocurrencia y la gravedad de sus consecuencias.",
+        ej:"Use la <b>Matriz de Riesgo 3×3</b> (o 5×5 si se prefiere): <b>Probabilidad</b> (Baja / Media / Alta) × <b>Consecuencia</b> (Leve / Grave / Fatal) = Nivel de riesgo. Ejemplo:<br>Incendio en bodega → Probabilidad Media × Consecuencia Grave = <b>Riesgo ALTO</b> → requiere acción inmediata.<br>Caída en escalera → Probabilidad Media × Consecuencia Leve = <b>Riesgo MEDIO</b>. Documente cada evaluación en la MIPER.<br><span class='ref'>Ref.: DS 44 Art. 7</span>" },
+      { lbl:"Construir la Matriz de Identificación de Peligros y Evaluación de Riesgos (MIPER/IPER).",
+        ej:"Elabore una tabla con las columnas: <b>Área | Peligro | Riesgo asociado | Personas expuestas | Probabilidad | Consecuencia | Nivel de riesgo | Medida de control propuesta | Plazo | Responsable.</b> Complete una fila por cada peligro identificado. Esta matriz es el documento central del diagnóstico y debe adjuntarse al plan de emergencia con firma del responsable.<br><span class='ref'>Ref.: DS 44 Art. 7</span>" },
+      { lbl:"Elaborar el mapa de riesgos de las instalaciones.",
+        ej:"Tome el croquis de la Fase 2 y agregue <b>íconos de peligro normalizados</b> en cada zona: llama = incendio, rayo = eléctrico, calavera = químico, persona cayendo = caída. Use colores estándar: <b>Rojo = riesgo alto, Amarillo = riesgo medio, Verde = riesgo bajo.</b> Este mapa debe publicarse en un lugar visible del establecimiento (NCh 1411).<br><span class='ref'>Ref.: DS 44 Art. 7 · NCh 1411</span>" },
+      { lbl:"Considerar los riesgos del entorno y del clima de la zona (viento, lluvia, nieve, sismicidad).",
+        ej:"Consulte el <b>mapa de zonificación sísmica de Chile (INN / CSN)</b> para determinar la zona sísmica del local (zonas 1 a 3, siendo 3 la más activa). Si el local está en zona de riesgo de inundación o aluvión, verifíquelo en el plan de riesgos comunal (ONEMI / SENAPRED). Para incendios, identifique la dirección del viento predominante para definir rutas de evacuación alejadas del humo.<br><span class='ref'>Ref.: DS 44 · NCh 433 (diseño sísmico)</span>" }
     ]},
   { t:"Inspección de equipos y elementos de seguridad",
     norm:"<b>DS N° 594, Art. 45, 47 y 48</b> (número, mantención e instrucción de uso de extintores) · <b>NCh 1411 / NCh 2111</b> (señalética).",
     tasks:[
-      "Verificar la cantidad y el tipo de extintores según la superficie y la clase de fuego de cada área.",
-      "Confirmar la vigencia y la mantención certificada de los extintores.",
-      "Comprobar el funcionamiento y la autonomía de las luces de emergencia ante un corte de luz.",
-      "Revisar el botiquín: insumos completos y no vencidos, e identificar a su responsable.",
-      "Verificar la señalética de seguridad: pictogramas normalizados y visibilidad permanente (día y noche).",
-      "Comprobar la existencia de planos de evacuación visibles."
+      { lbl:"Verificar la cantidad y el tipo de extintores según la superficie y la clase de fuego de cada área.",
+        ej:"El <b>DS 594 Art. 45</b> exige <b>1 extintor cada 150 m²</b> o fracción. Ejemplo: local de 300 m² = mínimo 2 extintores. Además verifique el <b>tipo correcto según clase de fuego</b>: Clase A (sólidos) → agua o PQS; Clase B (líquidos inflamables) → CO₂ o PQS; Clase C (eléctrico) → CO₂ (nunca agua). Si hay fuego de aceites de cocina (Clase K), se requiere extintor específico.<br><span class='ref'>Ref.: DS 594 Art. 44, 45</span>" },
+      { lbl:"Confirmar la vigencia y la mantención certificada de los extintores.",
+        ej:"Revise la <b>etiqueta de mantención</b> pegada en cada extintor. Debe indicar: empresa certificada que realizó la mantención, fecha y firma del técnico. La mantención debe hacerse <b>anualmente</b> (NCh 1429). Si el extintor no tiene etiqueta vigente o está vencida, es una <b>no conformidad crítica</b> que debe reportarse al empleador para corrección inmediata antes de continuar.<br><span class='ref'>Ref.: DS 594 Art. 47 · NCh 1429</span>" },
+      { lbl:"Comprobar el funcionamiento y la autonomía de las luces de emergencia ante un corte de luz.",
+        ej:"Use el <b>botón de prueba</b> (si existe) o apague el interruptor general del área y mida: ¿encienden automáticamente? ¿Iluminan el pasillo? La normativa exige <b>mínimo 90 minutos de autonomía</b> y al menos <b>1 lux de iluminancia</b> en la vía de evacuación (NCh 2111 / NFPA 101). Si no encienden o duran menos, son equipos defectuosos que deben reemplazarse.<br><span class='ref'>Ref.: DS 594 · NCh 2111</span>" },
+      { lbl:"Revisar el botiquín: insumos completos y no vencidos, e identificar a su responsable.",
+        ej:"Verifique que el botiquín contenga como mínimo: vendas de distintos tamaños, apósitos, gasas, tela adhesiva, tijeras, guantes desechables, antiséptico (alcohol 70% o povidona yodada) y analgésico básico. <b>Revise las fechas de vencimiento</b> de todos los insumos. Identifique al responsable: debe ser un trabajador con <b>capacitación vigente en primeros auxilios</b>. Registre nombre del responsable y fecha de última revisión.<br><span class='ref'>Ref.: DS 594 Art. 21</span>" },
+      { lbl:"Verificar la señalética de seguridad: pictogramas normalizados y visibilidad permanente (día y noche).",
+        ej:"La señalética debe cumplir <b>NCh 1411</b> y ser <b>fotoluminiscente</b> (visible en oscuridad). Verifique: ¿Las flechas de evacuación están entre 150–180 cm de altura? ¿El extintor tiene el pictograma rojo normalizado? ¿La salida de emergencia muestra la figura corriendo con flecha? ¿Las señales están limpias y sin obstrucciones? Si los pictogramas son caseros o no normalizados, deben reemplazarse.<br><span class='ref'>Ref.: DS 594 Art. 36 · NCh 1411 · NCh 2111</span>" },
+      { lbl:"Comprobar la existencia de planos de evacuación visibles.",
+        ej:"Verifique que en cada área o piso exista un <b>plano de evacuación plastificado</b>, fijado a la pared a la altura de los ojos, en un lugar de alta circulación. El plano debe incluir: croquis del área, <b>«Usted está aquí»</b>, flechas de evacuación hacia la salida más cercana, ubicación de extintores, botiquín y zona de seguridad. Si no existe o está desactualizado, su elaboración es una tarea prioritaria del plan.<br><span class='ref'>Ref.: DS 594 Art. 37 · DS 44</span>" }
     ]},
   { t:"Análisis del personal y la organización",
     norm:"<b>DS N° 44</b> (Comité Paritario con 25+ trabajadores o Delegado SST entre 10 y 25; participación de los trabajadores) · <b>DS N° 594, Art. 48</b>.",
     tasks:[
-      "Determinar la dotación total y por turno para planificar capacitaciones y simulacro.",
-      "Designar, junto al empleador, los encargados de emergencia: evacuación, primeros auxilios y uso de extintores.",
-      "Acordar fechas y horarios de capacitación y simulacro que no afecten la operación.",
-      "Verificar la existencia de Comité Paritario o Delegado SST y del Reglamento Interno (RIOHS)."
+      { lbl:"Determinar la dotación total y por turno para planificar capacitaciones y simulacro.",
+        ej:"Solicite a RRHH el listado de trabajadores por turno. Ejemplo:<br><b>Turno día</b> (08:00–17:00): 18 personas · <b>Turno tarde</b> (14:00–22:00): 8 personas · <b>Turno noche</b> (22:00–06:00): 4 personas. Con estos datos determine cuántas capacitaciones se necesitan (una por turno) y cómo organizar el simulacro para que <b>cubra todos los turnos</b> según lo exige el DS 44.<br><span class='ref'>Ref.: DS 44 Art. 14 · Ley 16.744 Art. 67</span>" },
+      { lbl:"Designar, junto al empleador, los encargados de emergencia: evacuación, primeros auxilios y uso de extintores.",
+        ej:"Defina formalmente al menos: <b>(a) Jefe de Emergencia</b> (generalmente el supervisor de turno); <b>(b) Encargado/a de Evacuación</b> por área; <b>(c) Encargado/a de Primeros Auxilios</b> (con capacitación vigente); <b>(d) Encargado/a de Extinción</b> (capacitado en uso de extintores). Elabore un <b>listado con nombre, cargo y rol en la emergencia</b>, y formalícelo mediante acta o carta firmada por el empleador.<br><span class='ref'>Ref.: DS 44 Art. 10 · DS 594 Art. 48</span>" },
+      { lbl:"Acordar fechas y horarios de capacitación y simulacro que no afecten la operación.",
+        ej:"Coordine con el empleador fechas fuera del período de mayor demanda operacional. El DS 44 exige como mínimo: <b>1 capacitación en uso de extintores, 1 en evacuación y 1 simulacro por año.</b> Las capacitaciones deben realizarse <b>en horario de trabajo</b> (obligación del empleador, sin descuento de sueldo ni horas extras del trabajador). Deje todas las fechas acordadas <b>por escrito</b> en el cronograma.<br><span class='ref'>Ref.: DS 44 Art. 14 · Ley 16.744 Art. 67</span>" },
+      { lbl:"Verificar la existencia de Comité Paritario o Delegado SST y del Reglamento Interno (RIOHS).",
+        ej:"Empresas con <b>25 o más trabajadores</b> deben tener <b>Comité Paritario de Higiene y Seguridad (CPHS)</b>, elegido cada 2 años ante la Inspección del Trabajo. Empresas con <b>10 a 24 trabajadores</b> deben tener un <b>Delegado de Seguridad y Salud en el Trabajo (SST)</b>. Solicite el acta de constitución vigente. El <b>RIOHS</b> debe estar actualizado y entregado a cada trabajador con firma de recepción.<br><span class='ref'>Ref.: DS 44 Art. 8 y 9 · Ley 16.744 Art. 66</span>" }
     ]},
   { t:"Sistematización y validación (antes de redactar el plan)",
     norm:"<b>DS N° 594, Art. 57</b> (todo establecimiento debe contar con plan de emergencia y de evacuación) · <b>DS N° 44</b> (Plan de Gestión de Riesgos de emergencias).",
     tasks:[
-      "Consolidar toda la información recopilada: croquis, fotos, matriz de riesgos y observaciones.",
-      "Elaborar el listado de observaciones y no conformidades a corregir.",
-      "Validar el diagnóstico con la gerencia y confirmar los recursos/presupuesto disponibles.",
-      "Definir el mecanismo y la periodicidad del seguimiento (revisiones y actualizaciones).",
-      "Con la información validada, recién comenzar a redactar el plan de emergencia."
+      { lbl:"Consolidar toda la información recopilada: croquis, fotos, matriz de riesgos y observaciones.",
+        ej:"Organice una <b>carpeta de diagnóstico</b> (física o digital) con: <b>(1)</b> Croquis de las instalaciones; <b>(2)</b> Fotografías etiquetadas por área y fecha; <b>(3)</b> MIPER/IPER completada y firmada; <b>(4)</b> Inventario de equipos de emergencia; <b>(5)</b> Listado de personal y encargados designados; <b>(6)</b> Documentos recopilados (RIOHS, planos, actas). Esta carpeta es el respaldo formal del diagnóstico.<br><span class='ref'>Ref.: DS 44 Art. 7</span>" },
+      { lbl:"Elaborar el listado de observaciones y no conformidades a corregir.",
+        ej:"Construya una tabla con las columnas: <b>N° | Descripción de la no conformidad | Área | Normativa infringida | Nivel de riesgo | Plazo propuesto | Responsable.</b> Ejemplo: <b>N°1:</b> Extintor vencido – Bodega norte – DS 594 Art. 47 – Riesgo Alto – Plazo: 7 días – Responsable: Gerente. Las no conformidades de riesgo alto deben corregirse <b>antes de aprobar el plan</b>.<br><span class='ref'>Ref.: DS 594 · DS 44</span>" },
+      { lbl:"Validar el diagnóstico con la gerencia y confirmar los recursos/presupuesto disponibles.",
+        ej:"Presente el diagnóstico en una reunión formal con el empleador o gerente. Revisen juntos: no conformidades detectadas, recursos necesarios (señalética, extintores, capacitaciones, simulacro) y presupuesto disponible. Elabore un <b>acta de reunión firmada</b> donde la gerencia toma conocimiento del diagnóstico y se compromete con los plazos de corrección. Sin este respaldo, el plan no tiene sustento formal.<br><span class='ref'>Ref.: DS 44 Art. 4 · Ley 16.744 Art. 68</span>" },
+      { lbl:"Definir el mecanismo y la periodicidad del seguimiento (revisiones y actualizaciones).",
+        ej:"Establezca en el plan: <b>revisión anual ordinaria</b> (o ante cambios significativos: obras, nuevos procesos, cambio de personal). Designe al responsable de actualizar el plan (Encargado de Prevención o el CPHS). Programe la fecha del próximo simulacro. El <b>DS 44 Art. 14 exige simulacro al menos una vez al año</b> y que quede registrado con lista de asistencia y evaluación.<br><span class='ref'>Ref.: DS 44 Art. 14 · DS 594 Art. 57</span>" },
+      { lbl:"Con la información validada, recién comenzar a redactar el plan de emergencia.",
+        ej:"El plan de emergencia debe incluir como mínimo (<b>DS 594 Art. 57 + DS 44</b>):<br><b>1.</b> Descripción del establecimiento y actividad.<br><b>2.</b> Análisis de riesgos (MIPER).<br><b>3.</b> Organigrama de emergencia (cargos y responsabilidades).<br><b>4.</b> Procedimientos por tipo de emergencia (incendio, sismo, evacuación, derrame).<br><b>5.</b> Plano de evacuación actualizado.<br><b>6.</b> Teléfonos de emergencia: Bomberos 132 · SAMU 131 · Carabineros 133 · ONEMI 1407.<br><b>7.</b> Registro de capacitaciones y simulacros.<br><span class='ref'>Ref.: DS 594 Art. 57 · DS 44 Art. 11–13</span>" }
     ]}
 ];
 
 const FIELDS = ["f_empresa","f_rubro","f_dir","f_trab","f_resp","f_fecha"];
-const state = {}; // key -> {done, note}
+const state = {}; // key -> {done, note, resp}
 const keyOf = (p,t)=>`${p}-${t}`;
 const CIRC = 2*Math.PI*50;
 
@@ -310,9 +357,11 @@ function render(){
               <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>
             </div>
             <div class="tbody">
-              <div class="lbl" onclick="toggle(${pi},${ti})">${tx}</div>
-              <button class="note-toggle" id="nt-${k}" onclick="toggleNote('${k}')">+ Observación</button>
-              <textarea class="note" id="note-${k}" placeholder="Escribe aquí tus observaciones, mediciones o hallazgos…" oninput="saveNote('${k}',this.value)"></textarea>
+              <div class="lbl" onclick="toggle(${pi},${ti})">${tx.lbl}</div>
+              <button class="guide-toggle" onclick="toggleGuide('${k}')">▸ ¿Cómo cumplirlo?</button>
+              <div class="guide-box" id="guide-${k}">${tx.ej}</div>
+              <div class="resp-label">Hallazgo / Respuesta del inspector</div>
+              <textarea class="resp" id="resp-${k}" placeholder="Describa aquí lo encontrado, las medidas tomadas o el resultado de la verificación…" oninput="saveResp('${k}',this.value)"></textarea>
             </div>
           </div>`;
         }).join("")}
@@ -325,23 +374,22 @@ function render(){
 
 function toggle(pi,ti){
   const k = keyOf(pi,ti);
-  state[k] = state[k] || {done:false,note:""};
+  state[k] = state[k] || {done:false,resp:""};
   state[k].done = !state[k].done;
   document.getElementById('task-'+k).classList.toggle('done',state[k].done);
   refresh();
   lsSave();
 }
-function toggleNote(k){
-  const ta = document.getElementById('note-'+k);
-  ta.classList.toggle('open');
-  if(ta.classList.contains('open')) ta.focus();
+function toggleGuide(k){
+  const box = document.getElementById('guide-'+k);
+  const btn = box.previousElementSibling;
+  const open = box.classList.toggle('open');
+  btn.textContent = open ? '▾ ¿Cómo cumplirlo?' : '▸ ¿Cómo cumplirlo?';
 }
-function saveNote(k,v){
-  state[k] = state[k] || {done:false,note:""};
-  state[k].note = v;
-  const nt = document.getElementById('nt-'+k);
-  nt.classList.toggle('has', v.trim().length>0);
-  nt.textContent = v.trim().length>0 ? "✎ Observación" : "+ Observación";
+function saveResp(k,v){
+  state[k] = state[k] || {done:false,resp:""};
+  state[k].resp = v;
+  document.getElementById('resp-'+k).classList.toggle('filled', v.trim().length>0);
   lsSave();
 }
 
@@ -376,10 +424,10 @@ function exportTxt(){
   PHASES.forEach((ph,pi)=>{
     out += `\n=== FASE ${pi+1}: ${ph.t} ===\n`;
     ph.tasks.forEach((tx,ti)=>{
-      const s=state[keyOf(pi,ti)]||{done:false,note:""};
+      const s=state[keyOf(pi,ti)]||{done:false,resp:""};
       gTot++; if(s.done)gDone++;
-      out += `[${s.done?"X":" "}] ${tx}\n`;
-      if(s.note && s.note.trim()) out += `      → Obs: ${s.note.trim()}\n`;
+      out += `[${s.done?"X":" "}] ${tx.lbl}\n`;
+      if(s.resp && s.resp.trim()) out += `      → Hallazgo: ${s.resp.trim()}\n`;
     });
   });
   out = out.replace(/\n{3,}/g,"\n\n") + `\n\nAVANCE TOTAL: ${gDone}/${gTot} tareas (${gTot?Math.round(gDone/gTot*100):0}%)\n`;
@@ -401,7 +449,10 @@ function importJson(e){
       render();
       Object.keys(state).forEach(k=>{
         if(state[k]?.done)document.getElementById('task-'+k)?.classList.add('done');
-        if(state[k]?.note){const ta=document.getElementById('note-'+k);if(ta){ta.value=state[k].note;saveNote(k,state[k].note);}}
+        if(state[k]?.resp){
+          const ta=document.getElementById('resp-'+k);
+          if(ta){ta.value=state[k].resp;saveResp(k,state[k].resp);}
+        }
       });
       refresh();
     }catch(err){alert("No se pudo leer el archivo: "+err.message);}
@@ -410,7 +461,7 @@ function importJson(e){
   e.target.value="";
 }
 function resetAll(){
-  if(!confirm("¿Seguro que quieres reiniciar? Se borrarán todas las marcas y observaciones."))return;
+  if(!confirm("¿Seguro que quieres reiniciar? Se borrarán todas las marcas y respuestas."))return;
   Object.keys(state).forEach(k=>delete state[k]);
   FIELDS.forEach(f=>document.getElementById(f).value="");
   try{localStorage.removeItem(LS_KEY);}catch(e){}
@@ -450,9 +501,9 @@ render();
 // Restaurar estado visual tras render
 Object.keys(state).forEach(k=>{
   if(state[k]?.done)document.getElementById('task-'+k)?.classList.add('done');
-  if(state[k]?.note){
-    const ta=document.getElementById('note-'+k);
-    if(ta){ta.value=state[k].note;saveNote(k,state[k].note);}
+  if(state[k]?.resp){
+    const ta=document.getElementById('resp-'+k);
+    if(ta){ta.value=state[k].resp;saveResp(k,state[k].resp);}
   }
 });
 // Guardar campos de empresa al cambiar
