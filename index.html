@@ -10,6 +10,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
   :root{
     --ink:#11201c;
@@ -417,15 +418,46 @@
   <div class="recover-card">
     <div class="lc-logo" style="font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px">Plan de Emergencia · Chile</div>
     <h3>Recuperar contraseña</h3>
-    <p>Para restablecer tu contraseña, contacta al administrador del sistema.</p>
-    <div class="info-box">
-      <b>Administrador:</b> Marco Araya<br>
-      <b>Correo:</b> marcoaraya1973@gmail.com<br><br>
-      Indícale tu nombre de usuario y te asignará una nueva contraseña desde el Panel de Administración.
+    <!-- paso 1: pedir usuario -->
+    <div id="recoverStep1">
+      <p>Ingresa tu nombre de usuario y te enviaremos un enlace a tu correo para restablecer la contraseña.</p>
+      <div class="field" style="margin-bottom:10px"><label>Nombre de usuario</label><input type="text" id="recoverUser" placeholder="Ej: jperez" autocomplete="username"></div>
+      <div id="recoverError" style="color:#c0392b;font-size:12.5px;min-height:16px;margin-bottom:8px"></div>
+      <div class="recover-actions">
+        <button class="btn primary" onclick="sendResetEmail()" style="font-size:13px;padding:9px 18px">Enviar enlace</button>
+        <button class="btn" onclick="closeRecover()" style="font-size:13px;padding:9px 18px">Cancelar</button>
+      </div>
     </div>
-    <div class="recover-actions">
-      <a href="mailto:marcoaraya1973@gmail.com?subject=Recuperación%20de%20contraseña%20-%20Plan%20Emergencia&body=Hola%2C%20necesito%20recuperar%20mi%20contraseña.%20Mi%20usuario%20es%3A%20" class="btn primary" style="text-decoration:none;font-size:13px;padding:9px 18px">Enviar correo</a>
-      <button class="btn" onclick="closeRecover()" style="font-size:13px;padding:9px 18px">Cerrar</button>
+    <!-- paso 2: confirmación -->
+    <div id="recoverStep2" style="display:none">
+      <div class="info-box" style="background:#edfbf2;border-color:rgba(47,143,91,.25)">
+        Enlace enviado. Revisa tu correo y haz clic en el link para establecer una nueva contraseña.<br><br>
+        <small style="color:var(--muted)">El enlace es válido por 1 hora.</small>
+      </div>
+      <div class="recover-actions" style="justify-content:flex-end;margin-top:4px">
+        <button class="btn primary" onclick="closeRecover()" style="font-size:13px;padding:9px 18px">Entendido</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANTALLA RESET CONTRASEÑA (se muestra al abrir link del correo) -->
+<div id="resetScreen" style="display:none;position:fixed;inset:0;background:rgba(17,32,28,.93);z-index:10001;align-items:center;justify-content:center;backdrop-filter:blur(6px)">
+  <div class="recover-card">
+    <div class="lc-logo" style="font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px">Plan de Emergencia · Chile</div>
+    <h3>Nueva contraseña</h3>
+    <div id="resetStep1">
+      <p style="font-size:13.5px;color:var(--muted);margin-bottom:16px">Ingresa tu nueva contraseña para continuar.</p>
+      <div class="field" style="margin-bottom:10px"><label>Nueva contraseña</label><div class="pw-wrap"><input type="password" id="resetPass1" placeholder="Mínimo 6 caracteres"><button type="button" class="pw-eye" onclick="togglePw('resetPass1',this)" tabindex="-1">👁</button></div></div>
+      <div class="field" style="margin-bottom:10px"><label>Confirmar contraseña</label><div class="pw-wrap"><input type="password" id="resetPass2" placeholder="Repite la contraseña"><button type="button" class="pw-eye" onclick="togglePw('resetPass2',this)" tabindex="-1">👁</button></div></div>
+      <div id="resetError" style="color:#c0392b;font-size:12.5px;min-height:16px;margin-bottom:8px"></div>
+      <button class="btn primary" onclick="confirmReset()" style="width:100%;font-size:14px;padding:11px">Guardar contraseña</button>
+    </div>
+    <div id="resetStep2" style="display:none">
+      <div class="info-box" style="background:#edfbf2;border-color:rgba(47,143,91,.25)">
+        Contraseña actualizada correctamente. Ya puedes ingresar con tu nueva contraseña.
+      </div>
+      <button class="btn primary" onclick="location.href=location.pathname" style="width:100%;margin-top:14px;font-size:14px;padding:11px">Ir al login</button>
     </div>
   </div>
 </div>
@@ -461,6 +493,7 @@
       <div class="nuf">
         <div class="field"><label>Nombre completo</label><input type="text" id="nuName" placeholder="Ej: Juan Pérez"></div>
         <div class="field"><label>Usuario</label><input type="text" id="nuUser" placeholder="Ej: jperez"></div>
+        <div class="field"><label>Correo electrónico</label><input type="email" id="nuEmail" placeholder="Ej: jperez@empresa.cl"></div>
         <div class="field"><label>Contraseña</label><div class="pw-wrap"><input type="password" id="nuPass" placeholder="Mínimo 6 caracteres"><button type="button" class="pw-eye" onclick="togglePw('nuPass',this)" tabindex="-1">👁</button></div></div>
         <div class="field">
           <label>Permisos</label>
@@ -973,8 +1006,102 @@ function _rlFail(){
 }
 function _rlReset(){ localStorage.removeItem(_RL_KEY); }
 
-function openRecover(){ document.getElementById('recoverModal').classList.add('show'); }
+// ==================== EMAILJS CONFIG ====================
+// 1. Crea cuenta en https://www.emailjs.com (gratis, 200 emails/mes)
+// 2. Crea un Service (Gmail) → copia el Service ID
+// 3. Crea un Template con las variables: {{to_name}}, {{to_email}}, {{reset_link}}
+//    Asunto sugerido: "Restablecer contraseña – Plan de Emergencia"
+//    Cuerpo sugerido: "Hola {{to_name}}, haz clic aquí para crear tu nueva contraseña: {{reset_link}}"
+// 4. Copia el Template ID y la Public Key (Account > General)
+const EJS_SERVICE  = 'TU_SERVICE_ID';   // ← reemplazar
+const EJS_TEMPLATE = 'TU_TEMPLATE_ID';  // ← reemplazar
+const EJS_PUBKEY   = 'TU_PUBLIC_KEY';   // ← reemplazar
+const RESET_URL    = 'https://maah1996.github.io/PREVENCI-N-RIESGOS/';
+
+function _genToken(){
+  const arr = new Uint8Array(24);
+  crypto.getRandomValues(arr);
+  return Array.from(arr).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function openRecover(){
+  document.getElementById('recoverStep1').style.display='block';
+  document.getElementById('recoverStep2').style.display='none';
+  document.getElementById('recoverUser').value='';
+  document.getElementById('recoverError').textContent='';
+  document.getElementById('recoverModal').classList.add('show');
+}
 function closeRecover(){ document.getElementById('recoverModal').classList.remove('show'); }
+
+async function sendResetEmail(){
+  const username = document.getElementById('recoverUser').value.trim().toLowerCase();
+  const errEl    = document.getElementById('recoverError');
+  if(!username){ errEl.textContent='Ingresa tu nombre de usuario.'; return; }
+  errEl.textContent='Buscando usuario…';
+  try{
+    await fbAuth.signInAnonymously();
+    const snap = await usersCol.where('username','==',username).get();
+    if(snap.empty){ errEl.textContent='Usuario no encontrado.'; return; }
+    const userDoc = snap.docs[0];
+    const userData = userDoc.data();
+    if(!userData.email){ errEl.textContent='Este usuario no tiene correo registrado. Contacta al administrador.'; return; }
+    const token     = _genToken();
+    const expiresAt = Date.now() + 60*60*1000; // 1 hora
+    await db.collection('reset_tokens').doc(token).set({
+      userId: userDoc.id, username, expiresAt
+    });
+    const resetLink = `${RESET_URL}?reset=${token}`;
+    await emailjs.send(EJS_SERVICE, EJS_TEMPLATE, {
+      to_name:  userData.name,
+      to_email: userData.email,
+      reset_link: resetLink
+    }, EJS_PUBKEY);
+    errEl.textContent='';
+    document.getElementById('recoverStep1').style.display='none';
+    document.getElementById('recoverStep2').style.display='block';
+  }catch(e){
+    console.error(e);
+    errEl.textContent='Error al enviar. Verifica la configuración de EmailJS.';
+  }
+}
+
+// ==================== RESET DESDE LINK ====================
+let _resetToken = null;
+let _resetUserId = null;
+
+async function checkResetToken(){
+  const params = new URLSearchParams(location.search);
+  const token  = params.get('reset');
+  if(!token) return;
+  try{
+    await fbAuth.signInAnonymously();
+    const doc = await db.collection('reset_tokens').doc(token).get();
+    if(!doc.exists || doc.data().expiresAt < Date.now()){
+      alert('El enlace de recuperación ha expirado o no es válido. Solicita uno nuevo.');
+      history.replaceState(null,'',location.pathname);
+      return;
+    }
+    _resetToken  = token;
+    _resetUserId = doc.data().userId;
+    document.getElementById('loginScreen').style.display='none';
+    const rs = document.getElementById('resetScreen');
+    rs.style.display='flex';
+  }catch(e){ console.error(e); }
+}
+
+async function confirmReset(){
+  const p1  = document.getElementById('resetPass1').value;
+  const p2  = document.getElementById('resetPass2').value;
+  const err = document.getElementById('resetError');
+  if(p1.length<6){ err.textContent='Mínimo 6 caracteres.'; return; }
+  if(p1!==p2){ err.textContent='Las contraseñas no coinciden.'; return; }
+  try{
+    await usersCol.doc(_resetUserId).update({password:p1});
+    await db.collection('reset_tokens').doc(_resetToken).delete();
+    document.getElementById('resetStep1').style.display='none';
+    document.getElementById('resetStep2').style.display='block';
+  }catch(e){ err.textContent='Error al guardar. Intenta de nuevo.'; }
+}
 
 async function doLogin(){
   const username = document.getElementById('loginUser').value.trim().toLowerCase();
@@ -1175,20 +1302,22 @@ async function deleteUser(uid){
 }
 
 async function createUser(){
-  const name  = document.getElementById('nuName').value.trim();
-  const uname = document.getElementById('nuUser').value.trim().toLowerCase();
-  const pass  = document.getElementById('nuPass').value;
+  const name   = document.getElementById('nuName').value.trim();
+  const uname  = document.getElementById('nuUser').value.trim().toLowerCase();
+  const email  = document.getElementById('nuEmail').value.trim().toLowerCase();
+  const pass   = document.getElementById('nuPass').value;
   const cWrite = document.getElementById('nuWrite').checked;
   const cPrint = document.getElementById('nuPrint').checked;
   const cReport= document.getElementById('nuReport').checked;
   const err    = document.getElementById('nuError');
   if(!name||!uname||!pass){ err.textContent='Complete todos los campos.'; return; }
   if(pass.length<6){ err.textContent='Contraseña mínimo 6 caracteres.'; return; }
+  if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ err.textContent='Correo inválido.'; return; }
   const snap = await usersCol.where('username','==',uname).get();
   if(!snap.empty){ err.textContent='Ese usuario ya existe.'; return; }
-  await usersCol.doc('u_'+Date.now()).set({username:uname,name,password:pass,role:'user',canWrite:cWrite,canPrint:cPrint,canReport:cReport});
+  await usersCol.doc('u_'+Date.now()).set({username:uname,name,email:email||'',password:pass,role:'user',canWrite:cWrite,canPrint:cPrint,canReport:cReport});
   err.textContent='';
-  ['nuName','nuUser','nuPass'].forEach(i=>document.getElementById(i).value='');
+  ['nuName','nuUser','nuEmail','nuPass'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('nuWrite').checked=false;
   document.getElementById('nuPrint').checked=false;
   renderUserList();
@@ -1626,6 +1755,8 @@ async function boot(){
   // Autenticarse anónimamente primero para que Firestore permita el acceso
   try{ await fbAuth.signInAnonymously(); }catch(e){ console.warn('anon auth error:',e); }
   await initAuth();
+  await checkResetToken();
+  if(_resetToken) return; // si hay token de reset, no continuar con flujo normal
   const sess = getSession();
   if(sess){
     if(sess.userId==='public'){
