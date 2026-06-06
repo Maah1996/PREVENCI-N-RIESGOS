@@ -200,6 +200,17 @@
   .pw-wrap input{padding-right:40px!important}
   .pw-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;line-height:1;font-size:17px}
   .pw-eye:hover{color:var(--ink)}
+  .btn-forgot{background:none;border:none;color:var(--green);font:inherit;font-size:12px;cursor:pointer;padding:2px 0;text-decoration:underline;text-underline-offset:2px;align-self:flex-end;opacity:.8}
+  .btn-forgot:hover{opacity:1}
+  /* MODAL RECUPERAR CLAVE */
+  #recoverModal{position:fixed;inset:0;background:rgba(17,32,28,.85);z-index:10000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+  #recoverModal.show{display:flex}
+  .recover-card{background:#fff;border-radius:18px;padding:32px 28px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+  .recover-card h3{font-family:'Fraunces',serif;font-size:19px;color:var(--ink);margin-bottom:8px}
+  .recover-card p{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+  .recover-card .info-box{background:var(--green-light);border:1px solid rgba(47,143,91,.2);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--ink-2);margin-bottom:18px}
+  .recover-card .info-box b{color:var(--green-d)}
+  .recover-actions{display:flex;gap:10px;justify-content:flex-end}
 
   /* USER BAR */
   #userBar{background:var(--ink-2);border-bottom:2px solid rgba(255,255,255,.06);padding:8px 0;display:none}
@@ -395,7 +406,26 @@
     <div id="loginError"></div>
     <div class="login-actions">
       <button class="btn primary" onclick="doLogin()">Ingresar</button>
+      <button type="button" class="btn-forgot" onclick="openRecover()">¿Olvidaste tu contraseña?</button>
       <button class="btn-public" onclick="publicView()">Continuar como público (solo lectura)</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RECUPERAR CONTRASEÑA -->
+<div id="recoverModal">
+  <div class="recover-card">
+    <div class="lc-logo" style="font-family:'Fraunces',serif;font-size:13px;font-weight:600;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px">Plan de Emergencia · Chile</div>
+    <h3>Recuperar contraseña</h3>
+    <p>Para restablecer tu contraseña, contacta al administrador del sistema.</p>
+    <div class="info-box">
+      <b>Administrador:</b> Marco Araya<br>
+      <b>Correo:</b> marcoaraya1973@gmail.com<br><br>
+      Indícale tu nombre de usuario y te asignará una nueva contraseña desde el Panel de Administración.
+    </div>
+    <div class="recover-actions">
+      <a href="mailto:marcoaraya1973@gmail.com?subject=Recuperación%20de%20contraseña%20-%20Plan%20Emergencia&body=Hola%2C%20necesito%20recuperar%20mi%20contraseña.%20Mi%20usuario%20es%3A%20" class="btn primary" style="text-decoration:none;font-size:13px;padding:9px 18px">Enviar correo</a>
+      <button class="btn" onclick="closeRecover()" style="font-size:13px;padding:9px 18px">Cerrar</button>
     </div>
   </div>
 </div>
@@ -922,17 +952,43 @@ async function initAuth(){
   }catch(e){}
 }
 
+// ---- Rate limiting anti-brute-force ----
+const _RL_KEY = 'login_rl_v1';
+function _rlGet(){ try{ return JSON.parse(localStorage.getItem(_RL_KEY))||{count:0,until:0}; }catch(e){ return {count:0,until:0}; } }
+function _rlSet(o){ localStorage.setItem(_RL_KEY,JSON.stringify(o)); }
+function _rlCheck(err){
+  const rl=_rlGet();
+  if(rl.until>Date.now()){
+    const mins=Math.ceil((rl.until-Date.now())/60000);
+    err.textContent=`Demasiados intentos. Espere ${mins} min.`;
+    return false;
+  }
+  return true;
+}
+function _rlFail(){
+  const rl=_rlGet();
+  rl.count=(rl.count||0)+1;
+  if(rl.count>=5) rl.until=Date.now()+5*60*1000;
+  _rlSet(rl);
+}
+function _rlReset(){ localStorage.removeItem(_RL_KEY); }
+
+function openRecover(){ document.getElementById('recoverModal').classList.add('show'); }
+function closeRecover(){ document.getElementById('recoverModal').classList.remove('show'); }
+
 async function doLogin(){
   const username = document.getElementById('loginUser').value.trim().toLowerCase();
   const password = document.getElementById('loginPass').value;
   const err = document.getElementById('loginError');
   if(!username||!password){ err.textContent='Complete todos los campos.'; return; }
+  if(!_rlCheck(err)) return;
   err.textContent='Verificando…';
   try{
     await fbAuth.signInAnonymously();
     const snap = await usersCol.where('username','==',username).get();
     const doc  = snap.docs.find(d=>d.data().password===password);
-    if(!doc){ err.textContent='Usuario o contraseña incorrectos.'; await fbAuth.signOut(); return; }
+    if(!doc){ _rlFail(); err.textContent='Usuario o contraseña incorrectos.'; await fbAuth.signOut(); return; }
+    _rlReset();
     _currentUser = {id:doc.id,...doc.data()};
     setSession({userId:doc.id});
     await loadChecklistData();
