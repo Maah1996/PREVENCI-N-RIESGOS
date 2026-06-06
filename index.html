@@ -978,9 +978,15 @@ async function initAuth(){
     const snap = await usersCol.limit(1).get();
     if(snap.empty){
       await usersCol.doc('admin').set({
-        username:'admin', name:'Administrador', password:'Maah26',
-        role:'admin', canWrite:true, canPrint:true
+        username:'admin', name:'Administrador', email:'marcoaraya1973@gmail.com',
+        password:'Maah26', role:'admin', canWrite:true, canPrint:true
       });
+    } else {
+      // Asegurar que el admin tenga email actualizado
+      const adminSnap = await usersCol.doc('admin').get();
+      if(adminSnap.exists && !adminSnap.data().email){
+        await usersCol.doc('admin').update({email:'marcoaraya1973@gmail.com'});
+      }
     }
   }catch(e){}
 }
